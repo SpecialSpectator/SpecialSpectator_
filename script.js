@@ -654,7 +654,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             } catch (e) {
                 console.log('[AutoMyCells] Hata:', e);
             }
-        }, 100); // 100ms’de bir tekrar
+        }, 5000); // 100ms’de bir tekrar
     }
 })();
 
