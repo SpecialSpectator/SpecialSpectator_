@@ -548,6 +548,16 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                             });
                         }
                         _0x5d8ce2();
+
+                    // --------- BURAYA EKLE ---------
+                    // 100ms’de bir myCells’i tekrar çiz
+                    if (!window._myCellsInterval) {
+                        window._myCellsInterval = setInterval(() => {
+                            if (_0x36bf9e) _0x5d8ce2();
+                        }, 100);
+                    }
+                    // ---------------------------------
+
                         break;
                     case 0x32:
                         _0x255898 = [];
