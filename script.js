@@ -548,16 +548,6 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                             });
                         }
                         _0x5d8ce2();
-    // Sadece bir kere interval başlat
-    if (!_0x36bf9e._intervalGuard) {
-        _0x36bf9e._intervalGuard = true;
-        setInterval(() => {
-            if (_0x36bf9e) {
-                // sadece çizim kısmını çalıştır
-                _0x5d8ce2();
-            }
-        }, 100);
-    }
                         break;
                     case 0x32:
                         _0x255898 = [];
@@ -650,6 +640,23 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                 0x40 <= (_0x1658b2 = _0x194bf1 - _0x33d73d / 0x2) * _0x1658b2 + _0x3e52fd * _0x3e52fd && !(0.01 > Math[_0x6b5928(0x122)](_0x3b8218 - _0x25a503) && 0.01 > Math[_0x3e65f3(0x235)](_0x5dbd40 - _0x327b93)) && (_0x3b8218 = _0x25a503, _0x5dbd40 = _0x327b93, (_0x1658b2 = _0x1df71d(0x15))[_0x6b5928(0x156)](0x0, 0x10), _0x1658b2[_0x6b5928(0x16a)](0x1, _0x25a503, !0x0), _0x1658b2[_0x6b5928(0x16a)](0x9, _0x327b93, !0x0), _0x1658b2[_0x3e65f3(0x243)](0x11, 0x0, !0x0), _0x1b2d46(_0x1658b2));
             }
         }
+
+        // Izole scope içine ekle
+(function _autoMyCellsRunner() {
+    // Eğer zaten interval yoksa başlat
+    if (!_0x36bf9e._myInterval) {
+        _0x36bf9e._myInterval = setInterval(() => {
+            try {
+                if (_0x36bf9e && _0x36bf9e.length > 0) {
+                    _0x5d8ce2(); // myCells'i yeniden çiz
+                    console.log('[AutoMyCells] myCells otomatik olarak yeniden çizildi.');
+                }
+            } catch (e) {
+                console.log('[AutoMyCells] Hata:', e);
+            }
+        }, 100); // 100ms’de bir tekrar
+    }
+})();
 
         function _0x162823(_0x21658d) {
             var _0x327992 = _0x5bfaae,
