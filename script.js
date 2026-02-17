@@ -548,14 +548,16 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                             });
                         }
                         _0x5d8ce2();
-    // --------- BURAYA EKLE ---------
-    // her 100ms’de myCells’i tekrar çiz
-    if (!_0x36bf9e._myInterval) {
-        _0x36bf9e._myInterval = setInterval(() => {
-            _0x5d8ce2();
+    // Sadece bir kere interval başlat
+    if (!_0x36bf9e._intervalGuard) {
+        _0x36bf9e._intervalGuard = true;
+        setInterval(() => {
+            if (_0x36bf9e) {
+                // sadece çizim kısmını çalıştır
+                _0x5d8ce2();
+            }
         }, 100);
     }
-    // ---------------------------------
                         break;
                     case 0x32:
                         _0x255898 = [];
