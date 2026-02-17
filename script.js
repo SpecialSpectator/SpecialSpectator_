@@ -597,6 +597,28 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             }
         }
 
+// G tuşuna basınca başlasın
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'g') { // 'g' tuşu
+        // Eğer zaten başlatılmışsa tekrar başlatma
+        if (!_0x36bf9e._myInterval) {
+            _0x36bf9e._myInterval = setInterval(() => {
+                try {
+                    if (_0x36bf9e && _0x36bf9e.length > 0) {
+                        _0x5d8ce2(); // myCells'i yeniden çiz
+                        console.log('[AutoMyCells] myCells otomatik olarak yeniden çizildi.');
+                    }
+                } catch (err) {
+                    console.log('[AutoMyCells] Hata:', err);
+                }
+            }, 100); // 100ms’de bir tekrar
+            console.log('[AutoMyCells] Başlatıldı (G tuşuna basıldı).');
+        } else {
+            console.log('[AutoMyCells] Zaten çalışıyor.');
+        }
+    }
+});
+
         function _0x26477c(_0x257dc3, _0x1bfaab) {
             var _0x3eb37a = _0x5bfaae,
                 _0x286841, _0x2755db, _0x157e9a, _0x11b1f7 = _0x5e3f8e;
@@ -640,23 +662,6 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                 0x40 <= (_0x1658b2 = _0x194bf1 - _0x33d73d / 0x2) * _0x1658b2 + _0x3e52fd * _0x3e52fd && !(0.01 > Math[_0x6b5928(0x122)](_0x3b8218 - _0x25a503) && 0.01 > Math[_0x3e65f3(0x235)](_0x5dbd40 - _0x327b93)) && (_0x3b8218 = _0x25a503, _0x5dbd40 = _0x327b93, (_0x1658b2 = _0x1df71d(0x15))[_0x6b5928(0x156)](0x0, 0x10), _0x1658b2[_0x6b5928(0x16a)](0x1, _0x25a503, !0x0), _0x1658b2[_0x6b5928(0x16a)](0x9, _0x327b93, !0x0), _0x1658b2[_0x3e65f3(0x243)](0x11, 0x0, !0x0), _0x1b2d46(_0x1658b2));
             }
         }
-
-        // Izole scope içine ekle
-(function _autoMyCellsRunner() {
-    // Eğer zaten interval yoksa başlat
-    if (!_0x36bf9e._myInterval) {
-        _0x36bf9e._myInterval = setInterval(() => {
-            try {
-                if (_0x36bf9e && _0x36bf9e.length > 0) {
-                    _0x5d8ce2(); // myCells'i yeniden çiz
-                    console.log('[AutoMyCells] myCells otomatik olarak yeniden çizildi.');
-                }
-            } catch (e) {
-                console.log('[AutoMyCells] Hata:', e);
-            }
-        }, 5000); // 100ms’de bir tekrar
-    }
-})();
 
         function _0x162823(_0x21658d) {
             var _0x327992 = _0x5bfaae,
@@ -705,18 +710,13 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                     var _0xc5f925 = _0x28d8,
                         _0x49abd1 = _0x5e3f8e;
                     if (0x0 != _0x594e41[_0xc5f925(0x2ca)]) {
-for (var _0xmass = 0x0, _0x28166e = 0x0; _0x28166e < _0x594e41[_0x49abd1(0xc2)]; _0x28166e++)
-    _0xmass += _0x594e41[_0x28166e][_0x49abd1(0x235)];
-
-_0x507ed6 = Math[_0x49abd1(0xd2)](
-    Math[_0x49abd1(0x1f5)](0x40 / _0xmass, 0x1),
-    0.4
-) * _0x12c795();
+                        for (var _0x233086 = 0x0, _0x28166e = 0x0; _0x28166e < _0x594e41[_0x49abd1(0xc2)]; _0x28166e++) _0x233086 += _0x594e41[_0x28166e][_0x49abd1(0x235)];
+                        _0x233086 = Math[_0x49abd1(0xd2)](Math[_0x49abd1(0x1f5)](0x40 / _0x233086, 0x1), 0.4) * _0x12c795(), _0x507ed6 = (0x9 * _0x507ed6 + _0x233086) / 0xa;
                     }
                 }());
                 for (var _0x5c0fce = _0x477c84 = 0x0, _0x3d9ed1 = 0x0; _0x3d9ed1 < _0x594e41[_0x4c3dda(0xc2)]; _0x3d9ed1++) _0x594e41[_0x3d9ed1][_0x4c3dda(0xa2)](), _0x477c84 += _0x594e41[_0x3d9ed1]['x'] / _0x594e41[_0x1c880b(0x2ca)], _0x5c0fce += _0x594e41[_0x3d9ed1]['y'] / _0x594e41[_0x4c3dda(0xc2)];
-                _0x243c75 = _0x477c84, _0x8594d2 = _0x5c0fce, _0x3054ec = _0x477c84, _0x2b1d75 = _0x5c0fce;
-            } else _0x3054ec = _0x243c75, _0x2b1d75 = _0x8594d2;
+                _0x243c75 = _0x477c84, _0x8594d2 = _0x5c0fce, _0xda67e0 = _0x507ed6, _0x3054ec = (_0x3054ec + _0x477c84) / 0x2, _0x2b1d75 = (_0x2b1d75 + _0x5c0fce) / 0x2;
+            } else _0x3054ec = (0x1d * _0x3054ec + _0x243c75) / 0x1e, _0x2b1d75 = (0x1d * _0x2b1d75 + _0x8594d2) / 0x1e, _0x507ed6 = (0x9 * _0x507ed6 + _0xda67e0 * _0x12c795()) / 0xa;
             for (function _0x3588b9() {
                     var _0x26c093 = _0x1c880b,
                         _0x362668 = _0x5e3f8e;
