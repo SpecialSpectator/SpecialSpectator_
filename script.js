@@ -1039,6 +1039,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             },
             'updatePos': function () {
                 _0x5ccbad = Date.now();
+                this[_0x3b2c09(0x24b)] = _0x5ccbad;
                 var _0x393b5d = _0x5bfaae,
                     _0x5839a0, _0x3b2c09 = _0x5e3f8e;
                 if (0x0 == this['id']) return 0x1;
@@ -1050,7 +1051,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             },
             'shouldRender': function () {
                 var _0x234939 = _0x5bfaae,
-                    _0x2924a6 = _0x5e3f8e;
+                    _0x2924a6 = _0x5e3f8e; 
                 return 0x0 == this['id'] || !(this['x'] + this[_0x2924a6(0x235)] + 0x28 < _0x3054ec - _0x33d73d / 0x2 / _0x507ed6 || this['y'] + this[_0x2924a6(0x235)] + 0x28 < _0x2b1d75 - _0xd9746b / 0x2 / _0x507ed6 || this['x'] - this[_0x2924a6(0x235)] - 0x28 > _0x3054ec + _0x33d73d / 0x2 / _0x507ed6 || this['y'] - this[_0x234939(0x334)] - 0x28 > _0x2b1d75 + _0xd9746b / 0x2 / _0x507ed6);
             },
             'getScore': function () {
