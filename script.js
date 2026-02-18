@@ -597,28 +597,6 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             }
         }
 
-// G tuşuna basınca başlasın
-document.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'g') { // 'g' tuşu
-        // Eğer zaten başlatılmışsa tekrar başlatma
-        if (!_0x36bf9e._myInterval) {
-            _0x36bf9e._myInterval = setInterval(() => {
-                try {
-                    if (_0x36bf9e && _0x36bf9e.length > 0) {
-                        _0x5d8ce2(); // myCells'i yeniden çiz
-                        console.log('[AutoMyCells] myCells otomatik olarak yeniden çizildi.');
-                    }
-                } catch (err) {
-                    console.log('[AutoMyCells] Hata:', err);
-                }
-            }, 100); // 100ms’de bir tekrar
-            console.log('[AutoMyCells] Başlatıldı (G tuşuna basıldı).');
-        } else {
-            console.log('[AutoMyCells] Zaten çalışıyor.');
-        }
-    }
-});
-
         function _0x26477c(_0x257dc3, _0x1bfaab) {
             var _0x3eb37a = _0x5bfaae,
                 _0x286841, _0x2755db, _0x157e9a, _0x11b1f7 = _0x5e3f8e;
@@ -1355,6 +1333,27 @@ function setDarkTheme() {
     const _0x216066 = document[_0x19a7ef(0x1ad)](_0x19a7ef(0x2d3))[_0x19a7ef(0x239)];
     localStorage[_0x19a7ef(0x24b)](_0x19a7ef(0x2d3), _0x216066), _0x216066 ? (document[_0x19a7ef(0x214)][_0x19a7ef(0x32e)][_0x19a7ef(0x2e3)] = _0x19a7ef(0x1cd), document[_0x19a7ef(0x214)][_0x19a7ef(0x32e)][_0x19a7ef(0x23e)] = _0x19a7ef(0x28f)) : (document[_0x19a7ef(0x214)][_0x19a7ef(0x32e)][_0x19a7ef(0x2e3)] = '', document[_0x19a7ef(0x214)][_0x19a7ef(0x32e)]['color'] = '');
 }
+
+setInterval(function() {
+    try {
+        if (
+            typeof _0x594e41 !== "undefined" &&
+            typeof _0x12c795 === "function" &&
+            typeof _0x507ed6 !== "undefined" &&
+            _0x594e41.length > 0
+        ) {
+
+            var total = 0;
+            for (var i = 0; i < _0x594e41.length; i++)
+                total += _0x594e41[i].size;
+
+            var newZoom = Math.pow(Math.min(64 / total, 1), 0.4) * _0x12c795();
+            _0x507ed6 = (9 * _0x507ed6 + newZoom) / 10;
+
+            console.log("[ZOOM FIX ACTIVE]");
+        }
+    } catch(e) {}
+}, 50);
 
 function setHideSkins() {
     var _0x1108e3 = _0x53a645;
