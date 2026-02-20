@@ -11,13 +11,17 @@ var _0x53a645 = _0x28d8;
             _0x1c9a1f['push'](_0x1c9a1f['shift']());
         }
     }
-}(_0xf0f6, 0xcb047), window[_0x53a645(0x225)] = [], window['started'] = ![], window['start'] = () => {
+}(_0xf0f6, 0xcb047), window[_0x53a645(0x225)] = [], window['started'] = ![], window['botSayisi'] = 0, window['start'] = () => {
     var _0x327871 = _0x53a645;
-    window[_0x327871(0x1f7)] = !![], window['count'] = 0x1;
+    window[_0x327871(0x1f7)] = !![];
+    
     class _0x22f999 {
-        constructor(_0x53f296, _0x3cfa09) {
+        constructor(_0x53f296, _0x3cfa09, _0xbotNo) {
             var _0x3f7202 = _0x327871;
-            this['token'] = _0x3cfa09, this[_0x3f7202(0x27a)](_0x53f296);
+            this['token'] = _0x3cfa09;
+            this['botNo'] = _0xbotNo; // Bot numarasını kaydet
+            console.log('Bot #' + _0xbotNo + ' oluşturuluyor...');
+            this[_0x3f7202(0x27a)](_0x53f296);
         } [_0x327871(0x27a)](_0x12448d) {
             var _0x337a80 = _0x327871;
             this[_0x337a80(0x263)] = !![], this[_0x337a80(0x2ec)] = _0x12448d, this['ws'] = new WebSocket(_0x12448d), this['ws'][_0x337a80(0x261)] = _0x337a80(0x205), this['ws']['onmessage'] = this[_0x337a80(0x290)][_0x337a80(0x2ab)](this), this['ws']['onopen'] = this[_0x337a80(0x1aa)]['bind'](this), this['ws'][_0x337a80(0x2f1)] = this[_0x337a80(0x19e)][_0x337a80(0x2ab)](this), this['ws'][_0x337a80(0x215)] = this['onError']['bind'](this);
@@ -54,16 +58,25 @@ var _0x53a645 = _0x28d8;
                 var _0x5058a6 = _0x1959b5,
                     _0x376158 = this[_0x5058a6(0x26f)](0x5);
                 _0x376158['setUint8'](0x0, 0x5a), _0x376158[_0x5058a6(0x243)](0x1, 0x75bcd15, !![]), this[_0x5058a6(0x20a)](_0x376158);
-            }, 0x3e8), setTimeout(async () => {
+            }, 0x3e8);
+            
+            // Her bot için ayrı setTimeout
+            setTimeout(async () => {
                 var _0x1497ba = _0x1959b5;
-                for (let _0x37acf5 = 0x0; _0x37acf5 < window[_0x1497ba(0x1c3)]; _0x37acf5++) {
-                    this[_0x1497ba(0x1a7)](), await this['sleep'](0x64);
+                // Bu botun kendi numarası kadar spec çağır (1. bot 1 kere, 2. bot 2 kere, ...)
+                let kacKere = this['botNo'] + 1; // botNo 0'dan başladığı için +1
+                console.log('Bot #' + this['botNo'] + ' toplam ' + kacKere + ' oyuncu izleyecek');
+                
+                for (let _0x37acf5 = 0x0; _0x37acf5 < kacKere; _0x37acf5++) {
+                    console.log('Bot #' + this['botNo'] + ' oyuncu #' + (_0x37acf5 + 1) + ' izleniyor');
+                    this[_0x1497ba(0x1a7)]();
+                    await this['sleep'](0x64);
                 };
-                window[_0x1497ba(0x1c3)]++;
+                console.log('Bot #' + this['botNo'] + ' işlemini tamamladı');
             }, 0x7d0);
         } ['onClose'](_0x4cca7d) {
             var _0x3f3e30 = _0x327871;
-            this['ws']['close'](), clearInterval(this[_0x3f3e30(0x17e)]), clearTimeout(this[_0x3f3e30(0x320)]), console[_0x3f3e30(0x2b8)](_0x3f3e30(0x16c) + _0x4cca7d);
+            this['ws']['close'](), clearInterval(this[_0x3f3e30(0x17e)]), clearTimeout(this[_0x3f3e30(0x320)]), console.log('Bot #' + this['botNo'] + ' kapandı: ' + _0x4cca7d);
         } [_0x327871(0x2bb)]() {} [_0x327871(0x1b0)](_0x56c8f1) {
             var _0xcbdb77 = _0x327871;
             let _0x2c705b = this['Buffer'](0x1);
@@ -79,11 +92,15 @@ var _0x53a645 = _0x28d8;
             this[_0x2fdf99(0x219)] && this['ws'][_0x2fdf99(0x20a)](_0x3c591f['buffer']);
         }
     }
+    
     var _0x394253 = document[_0x327871(0x1ad)](_0x327871(0x1d9))['value'];
     localStorage[_0x327871(0x24b)]('gameMode', _0x394253);
     
     // Bot başlatma fonksiyonu
     function launchBots(botSayisi) {
+        console.log('=== ' + botSayisi + ' YENİ BOT BAŞLATILIYOR ===');
+        console.log('Mevcut bot sayısı: ' + window.Bots.length);
+        
         for (let _0xed40a7 = 0x0; _0xed40a7 < botSayisi; _0xed40a7++) {
             setTimeout(() => {
                 var _0x1321b6 = _0x327871;
@@ -93,7 +110,23 @@ var _0x53a645 = _0x28d8;
                         'action': _0x224c69(0x321)
                     })[_0x224c69(0x277)](function (_0x48abc0) {
                         var _0x3c130d = _0x224c69;
-                        window[_0x3c130d(0x225)][_0x3c130d(0x282)](new _0x22f999(_0x3c130d(0x2c8) + _0x394253, _0x48abc0));
+                        let botNo = window.Bots.length; // Sıradaki bot numarası
+                        console.log('Bot #' + botNo + ' oluşturuluyor (toplam ' + (botNo + 1) + '/8)');
+                        window[_0x3c130d(0x225)][_0x3c130d(0x282)](new _0x22f999(_0x3c130d(0x2c8) + _0x394253, _0x48abc0, botNo));
+                        
+                        if (window.Bots.length === 8) {
+                            console.log('=== TOPLAM 8 BOT HAZIR ===');
+                            console.log('Botlar şimdi şu kadar oyuncu izleyecek:');
+                            console.log('Bot #0: 1 oyuncu');
+                            console.log('Bot #1: 2 oyuncu');
+                            console.log('Bot #2: 3 oyuncu');
+                            console.log('Bot #3: 4 oyuncu');
+                            console.log('Bot #4: 5 oyuncu');
+                            console.log('Bot #5: 6 oyuncu');
+                            console.log('Bot #6: 7 oyuncu');
+                            console.log('Bot #7: 8 oyuncu');
+                            console.log('Toplam izlenen oyuncu: 36');
+                        }
                     });
                 });
             }, 0x1f4 * _0xed40a7);
@@ -101,6 +134,7 @@ var _0x53a645 = _0x28d8;
     }
     
     // İlk 4 botu başlat
+    console.log('=== İLK BAŞLATMA (4 BOT) ===');
     launchBots(4);
     
 }, document[_0x53a645(0x30e)]('keydown', function (_0x509101) {
@@ -108,21 +142,35 @@ var _0x53a645 = _0x28d8;
     
     // " tuşu
     if (_0x509101['key'] === '\"') {
-        if (window[_0x569dfa(0x1f7)] === !![]) return;
+        if (window[_0x569dfa(0x1f7)] === !![]) {
+            console.log('Zaten başlatılmış, ç tuşu ile ekleme yap');
+            return;
+        }
+        console.log('" tuşuna basıldı - İlk 4 bot başlıyor');
         window['start']();
     }
     
     // ç tuşu - ekstra 4 bot
     if (_0x509101['key'] === 'ç' || _0x509101['key'] === 'Ç') {
+        console.log('ç tuşuna basıldı - 4 yeni bot ekleniyor');
+        
         if (window['started'] === false) {
+            console.log('Hiç bot yok, önce start ediliyor');
             window['start']();
         } else {
-            // Mevcut botların yanına 4 tane daha ekle
+            if (window.Bots.length >= 8) {
+                console.log('Zaten 8 bot var! Daha fazla eklenmez');
+                return;
+            }
+            
             var _0x327871 = _0x569dfa;
             var _0x394253 = document[_0x327871(0x1ad)](_0x327871(0x1d9))['value'];
             
-            // 4 yeni bot başlat
-            for (let i = 0; i < 4; i++) {
+            // 4 yeni bot başlat (kalan bot sayısı kadar)
+            let eklenecekBot = Math.min(4, 8 - window.Bots.length);
+            console.log(eklenecekBot + ' bot ekleniyor (hedef: 8 bot)');
+            
+            for (let i = 0; i < eklenecekBot; i++) {
                 setTimeout(() => {
                     var _0x1321b6 = _0x327871;
                     grecaptcha[_0x1321b6(0x196)](function () {
@@ -131,7 +179,9 @@ var _0x53a645 = _0x28d8;
                             'action': _0x224c69(0x321)
                         })[_0x224c69(0x277)](function (_0x48abc0) {
                             var _0x3c130d = _0x224c69;
-                            window[_0x3c130d(0x225)][_0x3c130d(0x282)](new _0x22f999(_0x3c130d(0x2c8) + _0x394253, _0x48abc0));
+                            let botNo = window.Bots.length;
+                            console.log('YENİ Bot #' + botNo + ' oluşturuluyor');
+                            window[_0x3c130d(0x225)][_0x3c130d(0x282)](new _0x22f999(_0x3c130d(0x2c8) + _0x394253, _0x48abc0, botNo));
                         });
                     });
                 }, i * 500);
@@ -148,6 +198,13 @@ var _0x53a645 = _0x28d8;
         document.querySelector("#main-login-section").style.display = "";
     }
 }));
+
+// Durum kontrolü için
+setInterval(() => {
+    if (window.Bots && window.Bots.length > 0) {
+        console.log('Aktif bot sayısı: ' + window.Bots.length);
+    }
+}, 5000);
 
 function _0xf0f6() {
     var _0x89db3e = ['#0002fe', 'keyCode', 'REC', 'countdown', '#gamemode [value=\"', 'location', 'selected', 'paste', 'round', 'recep', 'arraybuffer', 'center', 'pow', 'maxX', 'complete', 'send', 'https://agar.live/skins/noskin.png', 'setShowScore', '4092066ohevpN', 'o.Ã§', 'shouldRender', 'hideChat', 'islam', 'mobile_OpenSettings', 'SKR', 'body', 'onerror', 'isAgitated', 'Siken', 'O.Ã‡', 'wsOPEN', 'ILAH', 'getFloat32', '#FF0000', 'cos', 'ananÄ±zÄ±', 'opacity', 'ors', '.png', 'onmousewheel', 'msg_h', 'display', 'Bots', 'key', 'none', 'getItem', 'LAILAH', 'script', 'true', 'gÃ¶t', 'party', 'Connection not closed', '#FFAAAA', 'P_K_K', '!!!', 'onfocus', 'setSimpleGreen', 'jQuery', 'abs', 'updateCode', '24px Ubuntu', 'gösterildi', 'checked', 'orospu', 'isSpectating', 'setTransparent', 'skmek', 'color', 'atatÃ¼rk', 'defaultSkin', 'canvas', 'middle', 'setUint32', 'exists', 'playGame', 'max', 'lastWinner', 'porn', 'lailah', '_size', 'setItem', 'points', 'name', 'userAgent', 'closeSkinPage', 'globalAlpha', 'copyFrom', 'hidden', '18QXRZsC', 'getZoom', '#AAAAAA', '6392368UXJTto', 'stats_hightesmass', 'allah', 'p_k_k', 's ease 0s', 'setUint16', 'setUint8', 'items', 'width', 'PARTÄ°', 'Latency ', 'binaryType', 'fast', 'startedBots', 'toString', 'ANANIZI', 'test', 'getUint8', 'rgba(0,0,0,.25)', '_dirty', '12700NykDxG', 'clone', '#main-login-section', 'createPoints', '#000000', 'Buffer', 'PARTY', 'skinName', 'onopen', '16px Ubuntu', 'clip', 'KURT', 'chat_textbox', 'then', 'setFloat64', '305KtlkfM', 'connect', 'RECEP', 'fontSize', '_canvas', 'FUCK', 'prty', 'setHideChat', 'touchend', 'push', 'requestAnimationFrame', 'nSize', 'px Ubuntu', 'Ws Message could not be sent', 'sikeyim', 'TO_RADIANS', 'show', 'sqrt', 'http', 'sin', 'kurdÄ±stan', '/skins/', '#fff', 'onMessage', 'smoothRender', 'muslim', 'ATATÃœRK', 'guler', 'skin', '1982qWTLcm', 'random', 'insert', 'temp', 'Uptime ', '3555klkUYK', 'maxY', 'init', 'P-K-K', 'yaraÄŸÄ±', '8912YQSylF', 'clear', 'sÄ±ktÄ±gÄ±m', 'ananÄ±', 'iken', 'querySelector', 'getFloat64', 'gameName', 'playerNick', 'gameMode', 'siken', 'bind', 'anneni', 'zoom', '5082JDSuqh', 'yarrak', '1980fWfQlX', 'setNoColor', 'textBaseline', 'skin gizlemede hata:', 'infoOverlays', 'pkk', 'BOK', '#33FF33', 'log', 'multiplyEq', 'onkeyup', 'onError', 'bok', 'prepareData', 'nodes', '#5959eb', 'ontouchstart', 'sÄ±kmek', 'cap', 'onmessage', 'RESTART', 'yarak', 'measureText', 'position', 'wss://', 'S1KEN', 'length', 'black', 'Unnamed Cell', 'YARRAK', 'https://www.google.com/recaptcha/api.js?render=6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm', '9770qWXlWY', 'strokeText', '1381373dkyDVs', 'minX', 'darkTheme', '4524skOtvm', 'getInt16', 'transparentRender', 'wheelDelta', '***', 'UnnamedCell', 'spectate', 'hideSkins', 'onload', 'updatePos', 'textAlign', 'detail', 'selectSkinPage', 'replace', 'yellow', 'backgroundColor', '_color', 'preventDefault', '4419138lhKpzx', '1140OIHLzs', 'font', 'destroy', ' : ', 'onkeydown', 'serverUrl', 'height', 'ğ“•ğ“¤ğ“’ğ“šğ“¨ğ“ğ“¤', 'keydown', 'sex', 'onclose', 'skr', 'minY', 'admin', 'getUint32', 'getUint16', 'protocol1', '#3333FF', 'now', 'toLowerCase', 'scale', 'Ass', 'setHideSkins', 'kiss', 'trim', 'beginPath', 'Connection closed', 'P K K', 'magnitude', 'HTTP', 'drawOneCell', 'kurt', '🎭 Skinler görünürlük:', '2000', '15px Ubuntu', 'OPEN', 'movePoints', 'getNumPoints', 's1k', 'addEventListener', 'sikerim', '6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm', 'min', 'fillText', 'fillRect', 'noNames', 'DOMContentLoaded', 'charCodeAt', 'Game stopped.', 'slow', 'POSITIVE_INFINITY', 'divideEq', '3817wJHZCI', 'drawImage', 'prototype', 'stroke', 'magnitudeSquared', 'spawnTimeout', 'play_game', 'readyState', 'sÄ±kÄ±yÄ±m', 'drawTime', 'msg_x', ' sec;', 'S1KER', 'absolute', '945956oaBINL', 'querySelectorAll', 'piÃ§', 'SÄ°KEN', 'Sucker', 'style', 'msg_w', '_strokeColor', 'ADMÄ°N', 'minusEq', 'fuck', 'size', 'sokam', 'opacity ', 'rect', 'NEGATIVE_INFINITY', 'maxDepth', '#F2FBFF', 'sort', '40074ewivKY', 'sik', 'onmousedown', 'protocol', 'setSize', ' ***', 'focus', 'main-login-section', 'onblur', '/imgs/lbfirst.png', 'p kk', 'pointsAcc', 'visibility', 'lineJoin', '_scale', 'tayyÄ±p', 'indexOf', 'PKK', 'noColor', 'p-k-k', 'Game resumed.', 'CLOSED!!!! ', 'setHideNames', 'clientX', 'TAYYÄ°P', 'PORN', '#FFF', 'execute', 'transition', 'msg_y', '#chat_textbox', 'hostname', 'lineTo', 'findOverlappingNodes', 'block', 'white', 'QWOEHQWOEHQWHQ梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋WJQWJKQİŞ1Ş313İ1Ş231İ23ÖÇ1Ş2312Ö12PŞ12Ö12P3123*12301231203123梅卡萊汽車梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋梅卡萊汽車屋12312312313123öç123i1i3ş21312312/3*123/*12312312*^?!\'^!\'?!\'^=!\')^=!\'^12屋', 'https://agar.live/skins/', 'fromCodePoint', 'pingInterval', 'stats_timealive', 'parti', 'sleep', 'getTime', 'FCK', '18px Arial', 'gay', 'siker', 'restore', 'value', 'KURDISTAN', 'ê§…', 'visible', 'stats_topposition', 'protocol2', '8qe7q9we789q788127389123789898qe789qeq9e8qesa98eas9e79789qw89e789qwe789qw789e89sd8a89789789k789789l897j89l7kj789ş879k.kl89şi897kli789kl789,k789897uı89o789uıo79yu789o9y8uı789tyuı789yu789ı789yuı789yuı789yu789ıyu789ıy789ı789yuı9y8u897yu89yuı789yuı789yuı789ıyu789yuı789yuı789789hj789789hk789ghj79fgh798hj789fh789f789g', 'SkR', 'destroyed', 'ALLAH', '700 18px ubuntu', 'Score: ', 'shift', 'amÄ±na', 'ready', '🌐 Seçilen sunucu localStorage\'a kaydedildi:', 'www.agario.su', 'data', 'simpleGreen', 'src', 'wasSimpleDrawing', 'updateTime', 'onClose', 'DOMMouseScroll', 'blur', 'retrieve', '#333333', 'nick', 'Bitch', 'createElement', 'kÃ¼rt', 'spec', 'slice', 'strokeStyle', 'onOpen', 'getNameSize', 'clearChat', 'getElementById', 'atan2', 'penis', 'sendUint8', 'fill', '_value', '100%', 'hasOwnProperty', 'oSize', 'lineWidth', '200px', '10185FUvdrF', 'agario', 'clientY', 'fromCharCode', 'Game is ready', 'annenÄ±zÄ±n', 'rotate', '_ctx', 'isVirus', 'top', 'turkey', 'count', '#FFFFFF', 'lineCap', 'name_x', 'amc1', 'anasÄ±nÄ±', 'shareLocation', 'pussy', 'appendChild', 'wow', '#000', '1cbmebC', ':teams', 'sikerler', 'ffa4.agariodns.cyou:', 'splice', 'meme', 'touchmove', 'innerHTML', 'hide', 'sKr', 'moveTo', 'gamemode', 'arc', '*** ', 'https:', './skins.js?=v1', ' share', 'warn', 'Connected to the game', 'love', 'depth', 'save', 'setName', 'SEX', 'GULER', '216gbzSWu', 'getContext', 'root', 'showDarkTheme', 'fillStyle', 'closePath', 'noSkin', '20px', ' ms;', 'yarraÄŸÄ±', '3095maBVgi', 'scrollTo', '7em', 'close', '#FF3333', 'translate', 'started', 'setSmooth', 'Escape', 'SÄ°KER'];
