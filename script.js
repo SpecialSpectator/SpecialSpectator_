@@ -96,21 +96,31 @@ var _0x53a645 = _0x28d8;
         }, 0x1f4 * _0xed40a7);
     }
 
-    // 🔹 Yeni ekstra bot fonksiyonu
-    window.startExtra = () => {
-        var _0x24d9b7 = document.getElementById("gamemode").value;
-        for (let _0x53df25 = 0; _0x53df25 < 4; _0x53df25++) {
-            setTimeout(() => {
-                grecaptcha.ready(function () {
-                    grecaptcha.execute("6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm", {
-                        action: "play_game"
-                    }).then(function (_0xd20e7b) {
-                        window.Bots.push(new _0x22f999("wss://" + _0x24d9b7, _0xd20e7b));
-                    });
+window.startExtra = () => {
+
+    // Eğer ana start hiç çalışmadıysa önce onu başlat
+    if (!window.started) {
+        window.start();
+        return;
+    }
+
+    var _0x24d9b7 = document.getElementById("gamemode").value;
+
+    for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+            grecaptcha.ready(function () {
+                grecaptcha.execute("6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm", {
+                    action: "play_game"
+                }).then(function (_0xd20e7b) {
+                    window.Bots.push(
+                        new _0x22f999("wss://" + _0x24d9b7, _0xd20e7b)
+                    );
                 });
-            }, _0x53df25 * 500);
-        }
-    };
+            });
+        }, i * 400);
+    }
+
+};
 
 }, document[_0x53a645(0x30e)]('keydown', function (_0x509101) {
     var _0x569dfa = _0x53a645;
