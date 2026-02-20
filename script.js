@@ -56,7 +56,7 @@ var _0x53a645 = _0x28d8;
                 _0x376158['setUint8'](0x0, 0x5a), _0x376158[_0x5058a6(0x243)](0x1, 0x75bcd15, !![]), this[_0x5058a6(0x20a)](_0x376158);
             }, 0x3e8), setTimeout(async () => {
                 var _0x1497ba = _0x1959b5;
-                for (var _0x5b0ed3 = 0; _0x5b0ed3 < window[_0x1497ba(0x1c3)]; _0x5b0ed3++) {
+                for (let _0x37acf5 = 0x0; _0x37acf5 < window[_0x1497ba(0x1c3)]; _0x37acf5++) {
                     this[_0x1497ba(0x1a7)](), await this['sleep'](0x64);
                 };
                 window[_0x1497ba(0x1c3)]++;
@@ -95,37 +95,40 @@ var _0x53a645 = _0x28d8;
             });
         }, 0x1f4 * _0xed40a7);
     }
+
+    // 🔹 Yeni ekstra bot fonksiyonu
+    window.startExtra = () => {
+        var _0x24d9b7 = document.getElementById("gamemode").value;
+        for (let _0x53df25 = 0; _0x53df25 < 4; _0x53df25++) {
+            setTimeout(() => {
+                grecaptcha.ready(function () {
+                    grecaptcha.execute("6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm", {
+                        action: "play_game"
+                    }).then(function (_0xd20e7b) {
+                        window.Bots.push(new _0x22f999("wss://" + _0x24d9b7, _0xd20e7b));
+                    });
+                });
+            }, _0x53df25 * 500);
+        }
+    };
+
 }, document[_0x53a645(0x30e)]('keydown', function (_0x509101) {
     var _0x569dfa = _0x53a645;
     if (_0x509101['key'] === '\"') {
         if (window[_0x569dfa(0x1f7)] === !![]) return;
         window['start']();
     }
-    // SADECE BURAYI EKLEDIM - ç tuşu için aynı kodu kopyaladım
-    if (_0x509101['key'] === 'ç' || _0x509101['key'] === 'Ç') {
-        if (window[_0x569dfa(0x1f7)] === !![]) {
-            // Zaten başladıysa 4 bot daha ekle
-            var _0x327871 = _0x569dfa;
-            var _0x394253 = document[_0x327871(0x1ad)](_0x327871(0x1d9))['value'];
-            for (let _0xed40a7 = 0x0; _0xed40a7 < 0x4; _0xed40a7++) {
-                setTimeout(() => {
-                    var _0x1321b6 = _0x327871;
-                    grecaptcha[_0x1321b6(0x196)](function () {
-                        var _0x224c69 = _0x1321b6;
-                        grecaptcha[_0x224c69(0x172)](_0x224c69(0x310), {
-                            'action': _0x224c69(0x321)
-                        })[_0x224c69(0x277)](function (_0x48abc0) {
-                            var _0x3c130d = _0x224c69;
-                            window[_0x3c130d(0x225)][_0x3c130d(0x282)](new _0x22f999(_0x3c130d(0x2c8) + _0x394253, _0x48abc0));
-                        });
-                    });
-                }, 0x1f4 * _0xed40a7);
-            }
-        } else {
-            window['start']();
-        }
+
+    // 🔹 Ç tuşu ile ekstra 4 bot
+    if (_0x509101.key === 'ç') {
+        window.startExtra();
     }
-    _0x509101[_0x569dfa(0x226)] === 'b' && (document['querySelector'](_0x569dfa(0x26c))[_0x569dfa(0x32e)][_0x569dfa(0x224)] = _0x569dfa(0x227), window['xa']()), _0x509101['key'] === _0x569dfa(0x1f9) && (document[_0x569dfa(0x2a5)](_0x569dfa(0x26c))['style'][_0x569dfa(0x224)] = '');
+
+    _0x509101[_0x569dfa(0x226)] === 'b' && 
+        (document['querySelector'](_0x569dfa(0x26c))['style']['display'] = _0x569dfa(0x227), window['xa']());
+
+    _0x509101['key'] === _0x569dfa(0x1f9) && 
+        (document[_0x569dfa(0x2a5)](_0x569dfa(0x26c))['style']['display'] = '');
 }));
 
 function _0xf0f6() {
