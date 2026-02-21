@@ -381,7 +381,6 @@ function drawFullMapSnapshot() {
         return;
     }
 
-    // Map sınırları
     var minX = _0x145c29;
     var minY = _0x1bbc19;
     var maxX = _0x5d44aa;
@@ -390,44 +389,46 @@ function drawFullMapSnapshot() {
     var mapWidth = maxX - minX;
     var mapHeight = maxY - minY;
 
-    // Yeni canvas oluştur
     var canvas = document.createElement("canvas");
     canvas.width = 1000;
     canvas.height = 1000;
     canvas.style.position = "fixed";
-    canvas.style.right = "10px";
-    canvas.style.bottom = "10px";
+    canvas.style.left = "10px";
+    canvas.style.top = "10px";
     canvas.style.border = "2px solid red";
     canvas.style.zIndex = 999999;
-
     document.body.appendChild(canvas);
 
     var ctx = canvas.getContext("2d");
 
-    // Ölçek (harita -> canvas)
     var scaleX = canvas.width / mapWidth;
     var scaleY = canvas.height / mapHeight;
 
-    // Arkaplan
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Tüm cell'leri çiz
     for (var i = 0; i < _0x537300.length; i++) {
+
         var cell = _0x537300[i];
+        if (!cell) continue;
 
-        if (!cell || cell.x === undefined) continue;
+        var x = cell.x;
+        var y = cell.y;
 
-        var x = (cell.x - minX) * scaleX;
-        var y = (cell.y - minY) * scaleY;
-        var r = cell.size * scaleX;
+        // radius property indexini resolve edelim
+        var r = cell[_0x5e3f8e(0x235)];
+
+        if (x == null || y == null || r == null) continue;
+
+        var drawX = (x - minX) * scaleX;
+        var drawY = (y - minY) * scaleY;
+        var drawR = r * scaleX;
 
         ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.arc(drawX, drawY, drawR, 0, Math.PI * 2);
 
-        // Player hücrelerini farklı renkle
         if (_0x594e41.indexOf(cell) !== -1) {
-            ctx.fillStyle = "red";
+            ctx.fillStyle = "red";   // bizim hücre
         } else {
             ctx.fillStyle = "white";
         }
@@ -435,7 +436,7 @@ function drawFullMapSnapshot() {
         ctx.fill();
     }
 
-    console.log("Full map snapshot çizildi.");
+    console.log("FULL MAP DRAW OK");
 }
 
         function _0x147c50(_0x2f975d) {
