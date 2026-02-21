@@ -374,48 +374,30 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-function getMyRealCenter() {
+// İzole scope içinde ekle
+(function(){
+    // Debug fonksiyonunu global window'a ekliyoruz
+    window.debugGameArrays = function() {
+        // Bu arrayler oyun scope'undan geliyor
+        console.log("=== GAME ARRAYS DUMP ===");
+        console.log("_0x1e530a (Player IDs):", _0x1e530a);
+        console.log("_0x594e41 (Player Cells):", _0x594e41);
+        console.log("_0x2e2fc6 (ID → Cell Mapping):", _0x2e2fc6);
+        console.log("_0x5285af (Food/Small Cells):", _0x5285af);
+        console.log("_0x537300 (Virus Cells?):", _0x537300);
+        console.log("_0x36bf9e (Other Objects?):", _0x36bf9e);
+        console.log("=========================");
+    };
 
-    if (!_0x594e41 || !_0x594e41.length) {
-        console.log("Player cell yok.");
-        return null;
-    }
-
-    var totalX = 0;
-    var totalY = 0;
-    var totalMass = 0;
-
-    for (var i = 0; i < _0x594e41.length; i++) {
-
-        var cell = _0x594e41[i];
-        if (!cell || cell.x == null || cell.y == null) continue;
-
-        var r = cell[_0x5e3f8e(0x235)];
-
-        if (!r || isNaN(r)) continue;
-
-        var mass = r * r;
-
-        totalX += cell.x * mass;
-        totalY += cell.y * mass;
-        totalMass += mass;
-    }
-
-    if (totalMass === 0) {
-        console.log("Mass 0 çıktı.");
-        return null;
-    }
-
-    var centerX = totalX / totalMass;
-    var centerY = totalY / totalMass;
-
-    console.log("REAL CENTER:", centerX, centerY);
-
-    return { x: centerX, y: centerY };
-}
-
-window.getMyRealCenter = getMyRealCenter;
-window.myCellsDebug = _0x594e41;
+    // L tuşuna basınca bir kere çalışacak şekilde listener ekleyelim
+    let debugTriggered = false;
+    document.addEventListener('keydown', function(e) {
+        if (!debugTriggered && e.code === 'KeyL') {
+            debugTriggered = true;
+            window.debugGameArrays();
+        }
+    });
+})();
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
