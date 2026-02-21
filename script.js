@@ -374,21 +374,15 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-        // === DEBUG MAP COORDS ===
-function printMapCoords() {
-    console.log("---- MAP BOUNDS ----");
-    console.log("minX:", _0x145c29);
-    console.log("minY:", _0x1bbc19);
-    console.log("maxX:", _0x5d44aa);
-    console.log("maxY:", _0x5cf897);
+function printPlayerCenter() {
+    let cx = ~~((_0x145c29 + _0x5d44aa) / 2);
+    let cy = ~~((_0x1bbc19 + _0x5cf897) / 2);
 
-    console.log("---- CENTER ----");
-    console.log("centerX:", _0x3054ec);
-    console.log("centerY:", _0x2b1d75);
+    console.log("Calculated Center X:", cx);
+    console.log("Calculated Center Y:", cy);
 }
 
-// console'dan çağırabilmek için global yap
-window.printMapCoords = printMapCoords;
+window.printPlayerCenter = printPlayerCenter;
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
