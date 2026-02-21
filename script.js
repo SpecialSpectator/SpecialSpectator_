@@ -374,72 +374,39 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-function drawFullMapSnapshot() {
+function getMyRealCenter() {
 
-    if (!_0x537300 || !_0x537300.length) {
-        console.log("Cell verisi yok.");
-        return;
+    if (!_0x594e41 || !_0x594e41.length) {
+        console.log("Player cell yok.");
+        return null;
     }
 
-    var minX = _0x145c29;
-    var minY = _0x1bbc19;
-    var maxX = _0x5d44aa;
-    var maxY = _0x5cf897;
+    var totalX = 0;
+    var totalY = 0;
+    var totalMass = 0;
 
-    var mapWidth = maxX - minX;
-    var mapHeight = maxY - minY;
-
-    var canvas = document.createElement("canvas");
-    canvas.width = 1000;
-    canvas.height = 1000;
-    canvas.style.position = "fixed";
-    canvas.style.left = "10px";
-    canvas.style.top = "10px";
-    canvas.style.border = "2px solid red";
-    canvas.style.zIndex = 999999;
-    document.body.appendChild(canvas);
-
-    var ctx = canvas.getContext("2d");
-
-    var scaleX = canvas.width / mapWidth;
-    var scaleY = canvas.height / mapHeight;
-
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    for (var i = 0; i < _0x537300.length; i++) {
-
-        var cell = _0x537300[i];
+    for (var i = 0; i < _0x594e41.length; i++) {
+        var cell = _0x594e41[i];
         if (!cell) continue;
 
-        var x = cell.x;
-        var y = cell.y;
+        var r = cell[_0x5e3f8e(0x235)]; // radius
+        var mass = r * r; // agar mantığı (yaklaşık)
 
-        // radius property indexini resolve edelim
-        var r = cell[_0x5e3f8e(0x235)];
-
-        if (x == null || y == null || r == null) continue;
-
-        var drawX = (x - minX) * scaleX;
-        var drawY = (y - minY) * scaleY;
-        var drawR = r * scaleX;
-
-        ctx.beginPath();
-        ctx.arc(drawX, drawY, drawR, 0, Math.PI * 2);
-
-        if (_0x594e41.indexOf(cell) !== -1) {
-            ctx.fillStyle = "red";   // bizim hücre
-        } else {
-            ctx.fillStyle = "white";
-        }
-
-        ctx.fill();
+        totalX += cell.x * mass;
+        totalY += cell.y * mass;
+        totalMass += mass;
     }
 
-    console.log("FULL MAP DRAW OK");
+    var centerX = totalX / totalMass;
+    var centerY = totalY / totalMass;
+
+    console.log("REAL CENTER X:", centerX);
+    console.log("REAL CENTER Y:", centerY);
+
+    return { x: centerX, y: centerY };
 }
 
-window.drawFullMapSnapshot = drawFullMapSnapshot;
+window.getMyRealCenter = getMyRealCenter;
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
