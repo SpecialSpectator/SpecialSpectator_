@@ -374,58 +374,76 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === ANLIK PLAYER YEDEKLEME & AUTO-RESTORE ===
+// === PLAYER DATA MANAGER & SMOOTH CAMERA ===
 (function() {
-    // Yedek arrayler
-    var _0x1e530aBackup = [];
-    var _0x594e41Backup = [];
+    // Yedekleme arrayleri
+    let backupPlayerIds = [];
+    let backupPlayerCells = [];
 
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    function updatePlayerBackup() {
+        // Eğer ana array doluysa sürekli yedekle
+        if (_0x1e530a.length > 0 && _0x594e41.length > 0) {
+            backupPlayerIds = [..._0x1e530a];
+            backupPlayerCells = [..._0x594e41];
+        }
+    }
+
+    function restoreFromBackup() {
+        if (backupPlayerIds.length === 0) return; // yedek yok
+        let restoredIds = [];
+        let restoredCells = [];
+
+        // Backup ID'leri ana tüm map array ile eşleştir
+        backupPlayerIds.forEach(id => {
+            if (_0x2e2fc6[id]) {
+                restoredIds.push(id);
+                restoredCells.push(_0x2e2fc6[id]);
+            }
+        });
+
+        if (restoredIds.length > 0) {
+            _0x1e530a = restoredIds;
+            _0x594e41 = restoredCells;
+        }
+    }
+
+    function smoothCamera() {
+        if (_0x594e41.length === 0) return;
+        let avgX = 0, avgY = 0;
+        _0x594e41.forEach(cell => {
+            avgX += cell.x;
+            avgY += cell.y;
+        });
+        avgX /= _0x594e41.length;
+        avgY /= _0x594e41.length;
+
+        // Smooth lerp camera
+        _0x243c75 = lerp(_0x243c75, avgX, 0.2);
+        _0x8594d2 = lerp(_0x8594d2, avgY, 0.2);
+    }
+
+    // Her 50ms kontrol, restore veya backup
     setInterval(() => {
-        // Eğer ana array doluysa → yedekle
-        if (_0x1e530a.length && _0x594e41.length) {
-            _0x1e530aBackup = [..._0x1e530a];
-            _0x594e41Backup = [..._0x594e41];
-            console.log("💾 Backup updated:", {
-                ids: _0x1e530aBackup,
-                cells: _0x594e41Backup
-            });
+        if (_0x1e530a.length === 0 || _0x594e41.length === 0) {
+            restoreFromBackup();
+        } else {
+            updatePlayerBackup();
         }
-        // Eğer ana array boşsa → yedekten restore
-        else if (_0x1e530aBackup.length && _0x594e41Backup.length) {
-            let restoredIds = [];
-            let restoredCells = [];
-            
-            // Yedekten ID ve cell eşleştirip mapping'den çek
-            for (let i = 0; i < _0x1e530aBackup.length; i++) {
-                let id = _0x1e530aBackup[i];
-                let cell = _0x2e2fc6[id];
-                if (cell) {
-                    restoredIds.push(id);
-                    restoredCells.push(cell);
-                }
-            }
+        smoothCamera();
+    }, 50);
 
-            if (restoredIds.length) {
-                _0x1e530a = restoredIds;
-                _0x594e41 = restoredCells;
-
-                // Kamera için de güncelle
-                let centerCell = _0x594e41[0];
-                _0x243c75 = centerCell.x;
-                _0x8594d2 = centerCell.y;
-                _0x3054ec = (_0x3054ec + centerCell.x) / 2;
-                _0x2b1d75 = (_0x2b1d75 + centerCell.y) / 2;
-
-                console.log("♻️ Player restored from backup:", {
-                    ids: _0x1e530a,
-                    cells: _0x594e41
-                });
-            } else {
-                console.log("⚠️ Backup available ama mapping’de hücre bulunamadı.");
-            }
+    // L tuşu ile debug: tüm arrayleri console’de görebilirsin
+    window.addEventListener('keydown', e => {
+        if (e.key.toLowerCase() === 'l') {
+            console.log("📌 Player IDs:", _0x1e530a);
+            console.log("📌 Player Cells:", _0x594e41);
+            console.log("📌 Backup IDs:", backupPlayerIds);
+            console.log("📌 Backup Cells:", backupPlayerCells);
+            console.log("📌 All Map Data (ID → Cell):", _0x2e2fc6);
         }
-    }, 50); // 50ms interval → anlık ve hızlı update
-
+    });
 })();
 
         function _0x147c50(_0x2f975d) {
