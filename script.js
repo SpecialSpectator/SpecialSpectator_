@@ -374,14 +374,43 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === TEST: L TUŞU BASILINCA ARRAYLERİ KONTROL ET ===
 window.addEventListener('keydown', function(e) {
     if (e.key.toLowerCase() === 'l') {
-        console.log("📌 ===== L TUŞU BASILDI =====");
-        console.log("🔹 _0x1e530a (Player IDs array):", _0x1e530a);
-        console.log("🔹 _0x594e41 (Player cells array):", _0x594e41);
-        console.log("🔹 _0x2e2fc6 (ID → cell mapping):", _0x2e2fc6);
-        console.log("📌 ========================");
+        let myPlayerId = null;
+        let myCell = null;
+
+        // Tüm harita verisinden kendi hücremizi bul
+        for (let id in _0x2e2fc6) {
+            let cell = _0x2e2fc6[id];
+
+            // Örn: isMine flag varsa direkt al
+            if (cell.isMine) {
+                myPlayerId = parseInt(id);
+                myCell = cell;
+                break;
+            }
+        }
+
+        if (myPlayerId && myCell) {
+            // Arrayleri restore et
+            _0x1e530a = [myPlayerId];
+            _0x594e41 = [myCell];
+
+            // Kamera merkezini güncelle
+            window.lastValidCenter = { x: myCell.x, y: myCell.y };
+            _0x243c75 = myCell.x;
+            _0x8594d2 = myCell.y;
+            _0x3054ec = (_0x3054ec + myCell.x) / 2;
+            _0x2b1d75 = (_0x2b1d75 + myCell.y) / 2;
+
+            console.log("✅ Player restored from full map data", {
+                playerId: myPlayerId,
+                playerCells: _0x594e41,
+                lastValidCenter: window.lastValidCenter
+            });
+        } else {
+            console.log("⚠️ Player not found in full map data!");
+        }
     }
 });
 
