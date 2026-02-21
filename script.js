@@ -374,63 +374,25 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === PLAYER ID AND CELL MAPPING ===
-const playerId = window.myPlayerId;  // Önceden belirlenen oyuncu ID’si
-let myCell = null; // Bizim hücremizi saklayacağız
+(function() {
+    // Burada kodun genel işleyişi olacak, örnek olarak _0x2e2fc6 ve diğer array'ler var
+    var _0x1e530a = []; // Player IDs array
+    var _0x594e41 = []; // Player Cells array
+    var _0x2e2fc6 = {};  // ID → Cell mapping
 
-// Bu array oyun tarafından sağlanan ve tüm oyuncuların verisini tutan array
-const allPlayerData = _0x2e2fc6;  // Tüm oyuncuların verisi
+    // Eğer oyun doğru şekilde çalışıyorsa, şu şekilde verileri alıyorsunuz
+    window.addEventListener('keydown', function(e) {
+        if (e.key.toLowerCase() === 'l') {
+            // Konsola tüm oyuncuları ve kendi oyuncunun bilgilerini yazdır
+            window._allPlayers = _0x2e2fc6; // Tüm oyuncuların verilerini global'e aktarıyoruz
 
-// === Find Our Player ===
-function findMyPlayer() {
-    for (let id in allPlayerData) {
-        if (parseInt(id) === playerId) {
-            // Bizim hücremizi bulduk
-            myCell = allPlayerData[id];
-            console.log("✅ Our Player Found:", {
-                playerId: id,
-                cell: myCell
-            });
-            break;
+            console.log("📌 Player IDs:", _0x1e530a); // Kendi oyuncunun ID'lerini yazdır
+            console.log("📌 Player Cells:", _0x594e41); // Kendi oyuncunun hücrelerini yazdır
+            console.log("📌 All Players Mapping (ID → Cell):", window._allPlayers); // Tüm oyuncuların haritası
         }
-    }
+    });
 
-    if (!myCell) {
-        console.log("⚠️ Player not found in the mapping data.");
-    }
-}
-
-// === UPDATE CAMERA ON "L" KEY ===
-window.addEventListener('keydown', function(e) {
-    if (e.key.toLowerCase() === 'l') {
-        if (myCell) {
-            // Kamera merkezini güncelle
-            let x = myCell.x;
-            let y = myCell.y;
-
-            window.lastValidCenter = { x, y };  // Kamera merkezi
-            _0x243c75 = x;  // X koordinatına odaklan
-            _0x8594d2 = y;  // Y koordinatına odaklan
-            _0x3054ec = (_0x3054ec + x) / 2;  // Ekrandaki görünümü güncelle
-            _0x2b1d75 = (_0x2b1d75 + y) / 2;  // Aynı şekilde Y koordinatını da güncelle
-
-            console.log("✅ Player restored and camera centered on our position", {
-                playerId: playerId,
-                playerCells: myCell,
-                lastValidCenter: window.lastValidCenter
-            });
-        } else {
-            console.log("⚠️ Our player could not be found.");
-        }
-    }
-});
-
-// === Check Periodically ===
-// Bütün oyuncu verilerini her 200ms’de kontrol et
-setInterval(() => {
-    if (!window.myPlayerId) return; // Eğer player ID yoksa, kontrol etmeyi durdur
-    findMyPlayer(); // Bu fonksiyon ile her zaman ID’mizi kontrol et
-}, 200); // Her 200ms’de kontrol et
+})();
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
