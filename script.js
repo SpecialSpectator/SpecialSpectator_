@@ -374,14 +374,34 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-function printRealCenter() {
-    let realX = (_0x145c29 + _0x5d44aa) / 2;
-    let realY = (_0x1bbc19 + _0x5cf897) / 2;
+document.addEventListener("keydown", function (e) {
 
-    console.log("Map middle should be:", realX, realY);
-}
+    var arr = null;
+    var name = "";
 
-window.printRealCenter = printRealCenter;
+    if (e.key === "1") { arr = _0x1e530a; name = "_0x1e530a"; }
+    if (e.key === "2") { arr = _0x594e41; name = "_0x594e41"; }
+    if (e.key === "3") { arr = _0x5285af; name = "_0x5285af"; }
+    if (e.key === "4") { arr = _0x537300; name = "_0x537300"; }
+    if (e.key === "5") { arr = _0x36bf9e; name = "_0x36bf9e"; }
+    if (e.key === "6") { arr = _0x5f3dcb; name = "_0x5f3dcb"; }
+
+    if (arr !== null) {
+        console.log("====== ARRAY:", name, "======");
+        console.log("Length:", arr.length);
+        console.log(arr);
+
+        if (arr.length > 0 && arr[0].x !== undefined) {
+            console.log("Sample Cell:",
+                "id:", arr[0].id,
+                "x:", arr[0].x,
+                "y:", arr[0].y,
+                "size:", arr[0].size
+            );
+        }
+    }
+
+});
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
