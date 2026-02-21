@@ -374,34 +374,69 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-document.addEventListener("keydown", function (e) {
+function drawFullMapSnapshot() {
 
-    var arr = null;
-    var name = "";
-
-    if (e.key === "1") { arr = _0x1e530a; name = "_0x1e530a"; }
-    if (e.key === "2") { arr = _0x594e41; name = "_0x594e41"; }
-    if (e.key === "3") { arr = _0x5285af; name = "_0x5285af"; }
-    if (e.key === "4") { arr = _0x537300; name = "_0x537300"; }
-    if (e.key === "5") { arr = _0x36bf9e; name = "_0x36bf9e"; }
-    if (e.key === "6") { arr = _0x5f3dcb; name = "_0x5f3dcb"; }
-
-    if (arr !== null) {
-        console.log("====== ARRAY:", name, "======");
-        console.log("Length:", arr.length);
-        console.log(arr);
-
-        if (arr.length > 0 && arr[0].x !== undefined) {
-            console.log("Sample Cell:",
-                "id:", arr[0].id,
-                "x:", arr[0].x,
-                "y:", arr[0].y,
-                "size:", arr[0].size
-            );
-        }
+    if (!_0x537300 || !_0x537300.length) {
+        console.log("Cell verisi yok.");
+        return;
     }
 
-});
+    // Map sınırları
+    var minX = _0x145c29;
+    var minY = _0x1bbc19;
+    var maxX = _0x5d44aa;
+    var maxY = _0x5cf897;
+
+    var mapWidth = maxX - minX;
+    var mapHeight = maxY - minY;
+
+    // Yeni canvas oluştur
+    var canvas = document.createElement("canvas");
+    canvas.width = 1000;
+    canvas.height = 1000;
+    canvas.style.position = "fixed";
+    canvas.style.right = "10px";
+    canvas.style.bottom = "10px";
+    canvas.style.border = "2px solid red";
+    canvas.style.zIndex = 999999;
+
+    document.body.appendChild(canvas);
+
+    var ctx = canvas.getContext("2d");
+
+    // Ölçek (harita -> canvas)
+    var scaleX = canvas.width / mapWidth;
+    var scaleY = canvas.height / mapHeight;
+
+    // Arkaplan
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Tüm cell'leri çiz
+    for (var i = 0; i < _0x537300.length; i++) {
+        var cell = _0x537300[i];
+
+        if (!cell || cell.x === undefined) continue;
+
+        var x = (cell.x - minX) * scaleX;
+        var y = (cell.y - minY) * scaleY;
+        var r = cell.size * scaleX;
+
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+
+        // Player hücrelerini farklı renkle
+        if (_0x594e41.indexOf(cell) !== -1) {
+            ctx.fillStyle = "red";
+        } else {
+            ctx.fillStyle = "white";
+        }
+
+        ctx.fill();
+    }
+
+    console.log("Full map snapshot çizildi.");
+}
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
