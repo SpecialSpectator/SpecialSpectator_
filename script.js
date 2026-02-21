@@ -793,6 +793,19 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                 }();
         }
 
+        // --- BURAYA EKLE ---
+        if (_0x594e41.length > 0) {
+            var _0xsonX = 0, _0xsonY = 0;
+            for (var _0xi = 0; _0xi < _0x594e41.length; _0xi++) {
+                _0xsonX += _0x594e41[_0xi].x;
+                _0xsonY += _0x594e41[_0xi].y;
+            }
+            _0x3054ec = _0xsonX / _0x594e41.length;
+            _0x2b1d75 = _0xsonY / _0x594e41.length;
+        }
+        // --- EKLEME BİTTİ ---
+    } // <-- Bu kapanış parantezi zaten vardı, ekleme yok
+
         function _0x42607b() {
             var _0x4c2456 = _0x5bfaae,
                 _0x5df417 = _0x5e3f8e;
