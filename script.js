@@ -804,7 +804,6 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             _0x2b1d75 = _0xsonY / _0x594e41.length;
         }
         // --- EKLEME BİTTİ ---
-    } // <-- Bu kapanış parantezi zaten vardı, ekleme yok
 
         function _0x42607b() {
             var _0x4c2456 = _0x5bfaae,
