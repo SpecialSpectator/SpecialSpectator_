@@ -374,17 +374,20 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === AUTO-CAPTURE PLAYER ID ===
-setInterval(() => {
-    // Eğer ID daha önce kaydedilmediyse ve playerCells doluysa yakala
-    if (!_0x1e530a.length) return; // playerCells boşsa çık
-    if (!window.myPlayerId) {
-        window.myPlayerId = _0x1e530a[0]; // ilk hücreyi al
-        console.log("📌 My Player ID kaydedildi:", window.myPlayerId);
+// === G TUŞU İLE MY PLAYER ID KAYDET ===
+window.addEventListener('keydown', function(e) {
+    if (e.key.toLowerCase() === 'g') {
+        // _0x1e530a array'i dolu mu kontrol et
+        if (_0x1e530a.length > 0) {
+            window.myPlayerId = _0x1e530a[0]; // ilk hücreyi al
+            console.log("🎯 G TUŞU: My Player ID kaydedildi:", window.myPlayerId);
+        } else {
+            console.log("⚠️ G TUŞU: playerCells boş, ID yakalanamadı!");
+        }
     }
-}, 200); // her 200ms kontrol
+});
 
-// === RESTORE CAMERA ON 'L' KEY ===
+// === L TUŞU İLE KAMERA RESTORE ===
 window.addEventListener('keydown', function(e) {
     if (e.key.toLowerCase() === 'l') {
         let playerId = window.myPlayerId;
@@ -403,13 +406,13 @@ window.addEventListener('keydown', function(e) {
             _0x3054ec = (_0x3054ec + cell.x) / 2;
             _0x2b1d75 = (_0x2b1d75 + cell.y) / 2;
 
-            console.log("✅ Player restored correctly", {
+            console.log("✅ L TUŞU: Player restored correctly", {
                 playerId: playerId,
                 playerCells: _0x594e41,
                 lastValidCenter: window.lastValidCenter
             });
         } else {
-            console.log("⚠️ Player ID bulunamadı veya hücre yok!");
+            console.log("⚠️ L TUŞU: Player ID bulunamadı veya hücre yok!");
         }
     }
 });
