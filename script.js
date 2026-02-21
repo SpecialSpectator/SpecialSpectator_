@@ -439,6 +439,8 @@ function drawFullMapSnapshot() {
     console.log("FULL MAP DRAW OK");
 }
 
+window.drawFullMapSnapshot = drawFullMapSnapshot;
+
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
                 _0x2c4e3a = _0x5e3f8e;
