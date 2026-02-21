@@ -374,42 +374,41 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// Bu kodu oyunun ana scriptine veya izole scope'a ekle
-if (_0x1e530a.length > 0) {
-    // _0x1e530a array'i normalde kendi oyuncumuzun ID'sini içerir
-    window.myPlayerId = _0x1e530a[0]; // global olarak sakla
+// === MY PLAYER AUTO-RESTORE ON BUG ===
+
+// Normal oyun sırasında ID kaydet
+if (_0x1e530a.length > 0 && !window.myPlayerId) {
+    window.myPlayerId = _0x1e530a[0];
     console.log("📌 My Player ID kaydedildi:", window.myPlayerId);
 }
 
-window.addEventListener('keydown', function(e) {
-    if (e.key.toLowerCase() === 'l') {
-        let playerId = window.myPlayerId;
+// Her update’de kontrol et (oyun tick veya setInterval ile)
+setInterval(() => {
+    if (!window.myPlayerId) return; // ID yoksa çık
+    const playerId = window.myPlayerId;
 
-        if (playerId && _0x2e2fc6[playerId]) {
-            // Player hücresini al
-            let cell = _0x2e2fc6[playerId];
+    // Eğer player hücresi gelmişse ve _0x594e41 boşsa restore et
+    if (_0x2e2fc6[playerId] && (_0x594e41.length === 0 || !_0x594e41.includes(_0x2e2fc6[playerId]))) {
+        const cell = _0x2e2fc6[playerId];
 
-            // Arrayleri restore et
-            _0x1e530a = [playerId];
-            _0x594e41 = [cell];
+        // Arrayleri restore et
+        _0x1e530a = [playerId];
+        _0x594e41 = [cell];
 
-            // Kamera merkezini güncelle
-            window.lastValidCenter = { x: cell.x, y: cell.y };
-            _0x243c75 = cell.x;
-            _0x8594d2 = cell.y;
-            _0x3054ec = (_0x3054ec + cell.x) / 2;
-            _0x2b1d75 = (_0x2b1d75 + cell.y) / 2;
+        // Kamera merkezini güncelle
+        window.lastValidCenter = { x: cell.x, y: cell.y };
+        _0x243c75 = cell.x;
+        _0x8594d2 = cell.y;
+        _0x3054ec = (_0x3054ec + cell.x) / 2;
+        _0x2b1d75 = (_0x2b1d75 + cell.y) / 2;
 
-            console.log("✅ Player restored correctly", {
-                playerId: playerId,
-                playerCells: _0x594e41,
-                lastValidCenter: window.lastValidCenter
-            });
-        } else {
-            console.log("⚠️ Player ID bulunamadı veya hücre yok!");
-        }
+        console.log("✅ Player restored automatically", {
+            playerId: playerId,
+            playerCells: _0x594e41,
+            lastValidCenter: window.lastValidCenter
+        });
     }
-});
+}, 100); // 100ms aralıkla kontrol
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
