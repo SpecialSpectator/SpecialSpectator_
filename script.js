@@ -374,51 +374,58 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === PLAYER BACKUP & AUTO-RESTORE ===
+// === ANLIK PLAYER YEDEKLEME & AUTO-RESTORE ===
 (function() {
     // Yedek arrayler
     var _0x1e530aBackup = [];
     var _0x594e41Backup = [];
 
-    // 50ms interval ile ana arrayleri senkronize et
     setInterval(() => {
-        if (!_0x2e2fc6) return;
+        // Eğer ana array doluysa → yedekle
+        if (_0x1e530a.length && _0x594e41.length) {
+            _0x1e530aBackup = [..._0x1e530a];
+            _0x594e41Backup = [..._0x594e41];
+            console.log("💾 Backup updated:", {
+                ids: _0x1e530aBackup,
+                cells: _0x594e41Backup
+            });
+        }
+        // Eğer ana array boşsa → yedekten restore
+        else if (_0x1e530aBackup.length && _0x594e41Backup.length) {
+            let restoredIds = [];
+            let restoredCells = [];
+            
+            // Yedekten ID ve cell eşleştirip mapping'den çek
+            for (let i = 0; i < _0x1e530aBackup.length; i++) {
+                let id = _0x1e530aBackup[i];
+                let cell = _0x2e2fc6[id];
+                if (cell) {
+                    restoredIds.push(id);
+                    restoredCells.push(cell);
+                }
+            }
 
-        // ID → cell mapping’den backup arrayleri güncelle
-        for (let id in _0x2e2fc6) {
-            let cell = _0x2e2fc6[id];
-            id = parseInt(id);
+            if (restoredIds.length) {
+                _0x1e530a = restoredIds;
+                _0x594e41 = restoredCells;
 
-            // Yedekte yoksa ekle
-            if (!_0x1e530aBackup.includes(id)) {
-                _0x1e530aBackup.push(id);
-                _0x594e41Backup.push(cell);
+                // Kamera için de güncelle
+                let centerCell = _0x594e41[0];
+                _0x243c75 = centerCell.x;
+                _0x8594d2 = centerCell.y;
+                _0x3054ec = (_0x3054ec + centerCell.x) / 2;
+                _0x2b1d75 = (_0x2b1d75 + centerCell.y) / 2;
+
+                console.log("♻️ Player restored from backup:", {
+                    ids: _0x1e530a,
+                    cells: _0x594e41
+                });
+            } else {
+                console.log("⚠️ Backup available ama mapping’de hücre bulunamadı.");
             }
         }
+    }, 50); // 50ms interval → anlık ve hızlı update
 
-        // Eğer ana player array’leri boşsa backup’tan anlık restore
-        if (_0x1e530a.length === 0 || _0x594e41.length === 0) {
-            _0x1e530a = [..._0x1e530aBackup];
-            _0x594e41 = [..._0x594e41Backup];
-            console.log("⚠️ Player data restored instantly from backup.");
-        }
-
-        // Ana arrayleri mapping’e göre anlık güncelle
-        _0x594e41 = _0x1e530a.map(id => _0x2e2fc6[id]).filter(c => c);
-    }, 50);
-
-    // L tuşu ile tüm verileri konsola yazdır
-    window.addEventListener('keydown', function(e) {
-        if (e.key.toLowerCase() === 'l') {
-            console.log("📌 ===== L TUŞU BASILDI =====");
-            console.log("🔹 _0x1e530a (Player IDs array):", _0x1e530a);
-            console.log("🔹 _0x594e41 (Player Cells array):", _0x594e41);
-            console.log("🔹 _0x2e2fc6 (ID → cell mapping):", _0x2e2fc6);
-            console.log("🔹 _0x1e530aBackup (Backup IDs):", _0x1e530aBackup);
-            console.log("🔹 _0x594e41Backup (Backup Cells):", _0x594e41Backup);
-            console.log("📌 ========================");
-        }
-    });
 })();
 
         function _0x147c50(_0x2f975d) {
