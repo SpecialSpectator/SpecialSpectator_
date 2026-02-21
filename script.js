@@ -374,15 +374,14 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-function printPlayerCenter() {
-    let cx = ~~((_0x145c29 + _0x5d44aa) / 2);
-    let cy = ~~((_0x1bbc19 + _0x5cf897) / 2);
+function printRealCenter() {
+    let realX = (_0x145c29 + _0x5d44aa) / 2;
+    let realY = (_0x1bbc19 + _0x5cf897) / 2;
 
-    console.log("Calculated Center X:", cx);
-    console.log("Calculated Center Y:", cy);
+    console.log("Map middle should be:", realX, realY);
 }
 
-window.printPlayerCenter = printPlayerCenter;
+window.printRealCenter = printRealCenter;
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
