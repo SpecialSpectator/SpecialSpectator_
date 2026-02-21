@@ -375,22 +375,67 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
 (function() {
-    // Burada kodun genel işleyişi olacak, örnek olarak _0x2e2fc6 ve diğer array'ler var
-    var _0x1e530a = []; // Player IDs array
-    var _0x594e41 = []; // Player Cells array
-    var _0x2e2fc6 = {};  // ID → Cell mapping
+    // === Yedekleme Array'leri ===
+    let _0x1e530aBackup = [];
+    let _0x594e41Backup = [];
 
-    // Eğer oyun doğru şekilde çalışıyorsa, şu şekilde verileri alıyorsunuz
+    // === Gerçek Zamanlı Oyuncu Bilgileri ===
+    let _0x1e530a = []; // Player IDs
+    let _0x594e41 = []; // Player Cells
+    let _0x2e2fc6 = {}; // ID → cell eşlemesi
+
+    // === Verileri Güncelleyen Fonksiyon ===
+    function updatePlayerData() {
+        // Eğer player ID ve hücreler mevcutsa, yedeklemeyi yap
+        if (_0x1e530a.length > 0 && _0x594e41.length > 0) {
+            _0x1e530aBackup = [..._0x1e530a];
+            _0x594e41Backup = [..._0x594e41];
+        }
+
+        console.log("📌 _0x1e530a (Player IDs):", _0x1e530a);
+        console.log("📌 _0x594e41 (Player Cells):", _0x594e41);
+        console.log("📌 _0x2e2fc6 (ID → Cell Mapping):", _0x2e2fc6);
+    }
+
+    // === L Tuşuna Basıldığında Veriyi Güncelle ===
     window.addEventListener('keydown', function(e) {
         if (e.key.toLowerCase() === 'l') {
-            // Konsola tüm oyuncuları ve kendi oyuncunun bilgilerini yazdır
-            window._allPlayers = _0x2e2fc6; // Tüm oyuncuların verilerini global'e aktarıyoruz
-
-            console.log("📌 Player IDs:", _0x1e530a); // Kendi oyuncunun ID'lerini yazdır
-            console.log("📌 Player Cells:", _0x594e41); // Kendi oyuncunun hücrelerini yazdır
-            console.log("📌 All Players Mapping (ID → Cell):", window._allPlayers); // Tüm oyuncuların haritası
+            console.log("📌 ===== L TUŞU BASILDI =====");
+            updatePlayerData();
         }
     });
+
+    // === Verileri Geri Yükleme (Backup) ===
+    function restorePlayerData() {
+        if (_0x1e530aBackup.length > 0 && _0x594e41Backup.length > 0) {
+            _0x1e530a = [..._0x1e530aBackup];
+            _0x594e41 = [..._0x594e41Backup];
+            console.log("📌 Player data restored from backup.");
+        } else {
+            console.log("⚠️ No backup player data found.");
+        }
+    }
+
+    // === Tüm Oyuncu Verisi ile Bizim Oyuncuyu Karşılaştırma ===
+    setInterval(() => {
+        if (_0x2e2fc6) {
+            // Tüm oyuncu verileri içinde bizim oyuncuyu bul
+            for (let id in _0x2e2fc6) {
+                let cell = _0x2e2fc6[id];
+                if (_0x1e530a.includes(parseInt(id))) {
+                    _0x594e41.push(cell);  // Player cells'ı güncelle
+                    _0x1e530a.push(parseInt(id)); // Player IDs'yi güncelle
+                    break;  // Oyuncu bulundu, döngüyü bitir
+                }
+            }
+        }
+
+        // Eğer _0x594e41 ve _0x1e530a array'leri boşsa (bug durumu), eski verileri geri al
+        if (_0x1e530a.length === 0 || _0x594e41.length === 0) {
+            console.log("⚠️ Player data lost, restoring from backup...");
+            restorePlayerData();
+        }
+    }, 100);  // Her 100ms'de bir kontrol et
 
 })();
 
