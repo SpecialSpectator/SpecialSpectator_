@@ -374,45 +374,38 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === G TUŞU İLE MY PLAYER ID KAYDET ===
-window.addEventListener('keydown', function(e) {
-    if (e.key.toLowerCase() === 'g') {
-        // _0x1e530a array'i dolu mu kontrol et
-        if (_0x1e530a.length > 0) {
-            window.myPlayerId = _0x1e530a[0]; // ilk hücreyi al
-            console.log("🎯 G TUŞU: My Player ID kaydedildi:", window.myPlayerId);
-        } else {
-            console.log("⚠️ G TUŞU: playerCells boş, ID yakalanamadı!");
-        }
-    }
-});
-
-// === L TUŞU İLE KAMERA RESTORE ===
+// === PLAYER RESTORE & CAMERA FIX ON "L" KEY ===
 window.addEventListener('keydown', function(e) {
     if (e.key.toLowerCase() === 'l') {
-        let playerId = window.myPlayerId;
+        // Oyuncu ID'sini bul
+        let playerId = null;
+        for (let id in _0x2e2fc6) {
+            // _0x2e2fc6[id] içindeki hücre senin oyuncuna aitse al
+            // Eğer sadece 1 oyuncu varsa direkt ilk ID'yi alabiliriz
+            playerId = parseInt(id);
+            break;
+        }
 
-        if (playerId && _0x2e2fc6[playerId]) {
-            let cell = _0x2e2fc6[playerId];
-
-            // Arrayleri restore et
+        if (playerId !== null) {
+            // Player hücrelerini ve ID'leri restore et
             _0x1e530a = [playerId];
-            _0x594e41 = [cell];
+            _0x594e41 = [_0x2e2fc6[playerId]];
 
             // Kamera merkezini güncelle
+            let cell = _0x594e41[0];
             window.lastValidCenter = { x: cell.x, y: cell.y };
             _0x243c75 = cell.x;
             _0x8594d2 = cell.y;
             _0x3054ec = (_0x3054ec + cell.x) / 2;
             _0x2b1d75 = (_0x2b1d75 + cell.y) / 2;
 
-            console.log("✅ L TUŞU: Player restored correctly", {
+            console.log("✅ Player restored and camera fixed", {
                 playerId: playerId,
                 playerCells: _0x594e41,
                 lastValidCenter: window.lastValidCenter
             });
         } else {
-            console.log("⚠️ L TUŞU: Player ID bulunamadı veya hücre yok!");
+            console.log("⚠️ Player ID bulunamadı, restore edilemiyor!");
         }
     }
 });
