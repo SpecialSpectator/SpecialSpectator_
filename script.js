@@ -386,27 +386,36 @@ function getMyRealCenter() {
     var totalMass = 0;
 
     for (var i = 0; i < _0x594e41.length; i++) {
-        var cell = _0x594e41[i];
-        if (!cell) continue;
 
-        var r = cell[_0x5e3f8e(0x235)]; // radius
-        var mass = r * r; // agar mantığı (yaklaşık)
+        var cell = _0x594e41[i];
+        if (!cell || cell.x == null || cell.y == null) continue;
+
+        var r = cell[_0x5e3f8e(0x235)];
+
+        if (!r || isNaN(r)) continue;
+
+        var mass = r * r;
 
         totalX += cell.x * mass;
         totalY += cell.y * mass;
         totalMass += mass;
     }
 
+    if (totalMass === 0) {
+        console.log("Mass 0 çıktı.");
+        return null;
+    }
+
     var centerX = totalX / totalMass;
     var centerY = totalY / totalMass;
 
-    console.log("REAL CENTER X:", centerX);
-    console.log("REAL CENTER Y:", centerY);
+    console.log("REAL CENTER:", centerX, centerY);
 
     return { x: centerX, y: centerY };
 }
 
 window.getMyRealCenter = getMyRealCenter;
+window.myCellsDebug = _0x594e41;
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
