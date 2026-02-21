@@ -374,60 +374,52 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === Player Data Backup ===
-let _0x1e530aBackup = []; // Yedek Player ID array
-let _0x594e41Backup = []; // Yedek Player Cells array
+// === PLAYER BACKUP & AUTO-RESTORE ===
+(function() {
+    // Yedek arrayler
+    var _0x1e530aBackup = [];
+    var _0x594e41Backup = [];
 
-// === Oyuncu Verilerini Güncelleyen Fonksiyon ===
-function updatePlayerData() {
-    if (_0x1e530a.length > 0 && _0x594e41.length > 0) {
-        _0x1e530aBackup = [..._0x1e530a];  // Son Player ID'yi yedekle
-        _0x594e41Backup = [..._0x594e41];  // Son Player Cell'i yedekle
-    }
+    // 50ms interval ile ana arrayleri senkronize et
+    setInterval(() => {
+        if (!_0x2e2fc6) return;
 
-    console.log("📌 _0x1e530a (Player IDs):", _0x1e530a);
-    console.log("📌 _0x594e41 (Player Cells):", _0x594e41);
-    console.log("📌 _0x2e2fc6 (ID → Cell Mapping):", _0x2e2fc6);
-}
-
-// === L Tuşuna Basıldığında Verileri Güncelle ===
-window.addEventListener('keydown', function(e) {
-    if (e.key.toLowerCase() === 'l') {
-        console.log("📌 ===== L TUŞU BASILDI =====");
-        updatePlayerData(); // L tuşuna basılınca veriyi güncelle
-    }
-});
-
-// === Verileri Yedekten Geri Yükleme (Backup) ===
-function restorePlayerData() {
-    if (_0x1e530aBackup.length > 0 && _0x594e41Backup.length > 0) {
-        _0x1e530a = [..._0x1e530aBackup];
-        _0x594e41 = [..._0x594e41Backup];
-        console.log("📌 Player data restored from backup.");
-    } else {
-        console.log("⚠️ No backup player data found.");
-    }
-}
-
-// === Tüm Oyuncu Verileri ile Bizim Oyuncumuzu Karşılaştırma ===
-setInterval(() => {
-    if (_0x2e2fc6) {
+        // ID → cell mapping’den backup arrayleri güncelle
         for (let id in _0x2e2fc6) {
             let cell = _0x2e2fc6[id];
-            if (_0x1e530a.includes(parseInt(id))) {
-                _0x594e41.push(cell);  // Player cells'ı güncelle
-                _0x1e530a.push(parseInt(id)); // Player IDs'yi güncelle
-                break;  // Oyuncu bulundu, döngüyü bitir
+            id = parseInt(id);
+
+            // Yedekte yoksa ekle
+            if (!_0x1e530aBackup.includes(id)) {
+                _0x1e530aBackup.push(id);
+                _0x594e41Backup.push(cell);
             }
         }
-    }
 
-    // Eğer _0x594e41 ve _0x1e530a array'leri boşsa (bug durumu), eski verileri geri al
-    if (_0x1e530a.length === 0 || _0x594e41.length === 0) {
-        console.log("⚠️ Player data lost, restoring from backup...");
-        restorePlayerData();
-    }
-}, 100);  // Her 100ms'de bir kontrol et
+        // Eğer ana player array’leri boşsa backup’tan anlık restore
+        if (_0x1e530a.length === 0 || _0x594e41.length === 0) {
+            _0x1e530a = [..._0x1e530aBackup];
+            _0x594e41 = [..._0x594e41Backup];
+            console.log("⚠️ Player data restored instantly from backup.");
+        }
+
+        // Ana arrayleri mapping’e göre anlık güncelle
+        _0x594e41 = _0x1e530a.map(id => _0x2e2fc6[id]).filter(c => c);
+    }, 50);
+
+    // L tuşu ile tüm verileri konsola yazdır
+    window.addEventListener('keydown', function(e) {
+        if (e.key.toLowerCase() === 'l') {
+            console.log("📌 ===== L TUŞU BASILDI =====");
+            console.log("🔹 _0x1e530a (Player IDs array):", _0x1e530a);
+            console.log("🔹 _0x594e41 (Player Cells array):", _0x594e41);
+            console.log("🔹 _0x2e2fc6 (ID → cell mapping):", _0x2e2fc6);
+            console.log("🔹 _0x1e530aBackup (Backup IDs):", _0x1e530aBackup);
+            console.log("🔹 _0x594e41Backup (Backup Cells):", _0x594e41Backup);
+            console.log("📌 ========================");
+        }
+    });
+})();
 
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
