@@ -374,69 +374,89 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === PLAYER DATA MANAGER & SMOOTH CAMERA (Optimized) ===
+// === ULTRA STABLE PLAYER MANAGER ===
 (function() {
-    // Yedekleme arrayleri
-    let backupPlayerIds = [];
-    let backupPlayerCells = [];
+
+    let backupIds = [];
+    let backupCells = [];
+
+    const LERP_FACTOR = 0.18;
 
     const lerp = (a, b, t) => a + (b - a) * t;
 
-    function updatePlayerBackup() {
-        // Ana array doluysa sürekli yedekle
-        if (_0x1e530a.length > 0 && _0x594e41.length > 0) {
-            backupPlayerIds = [..._0x1e530a];
-            backupPlayerCells = _0x594e41.map(c => ({ ...c }));
+    function syncFromMapping() {
+        if (!backupIds.length) return;
+
+        let syncedIds = [];
+        let syncedCells = [];
+
+        for (let i = 0; i < backupIds.length; i++) {
+            const id = backupIds[i];
+            const mapped = _0x2e2fc6[id];
+            if (mapped) {
+                syncedIds.push(id);
+                syncedCells.push(mapped);
+            }
+        }
+
+        if (syncedIds.length) {
+            _0x1e530a = syncedIds;
+            _0x594e41 = syncedCells;
         }
     }
 
-    function restoreFromBackup() {
-        if (backupPlayerIds.length === 0) return; // yedek yok
+    function updateBackupLive() {
+        if (_0x1e530a.length && _0x594e41.length) {
 
-        // Ana array boşalmadan önce mapping’den al
-        let restoredIds = [];
-        let restoredCells = [];
+            // mapping ile birebir senkron al (merge sonrası doğru veri için)
+            let freshIds = [];
+            let freshCells = [];
 
-        backupPlayerIds.forEach(id => {
-            const cell = _0x2e2fc6[id];
-            if (cell) {
-                restoredIds.push(id);
-                restoredCells.push(cell);
+            for (let i = 0; i < _0x1e530a.length; i++) {
+                const id = _0x1e530a[i];
+                const mapped = _0x2e2fc6[id];
+                if (mapped) {
+                    freshIds.push(id);
+                    freshCells.push(mapped);
+                }
             }
-        });
 
-        if (restoredIds.length > 0) {
-            _0x1e530a = restoredIds;
-            _0x594e41 = restoredCells;
+            if (freshIds.length) {
+                backupIds = freshIds;
+                backupCells = freshCells;
+            }
         }
     }
 
     function smoothCamera() {
-        if (_0x594e41.length === 0) return;
-        let avgX = 0, avgY = 0;
-        _0x594e41.forEach(cell => {
-            avgX += cell.x;
-            avgY += cell.y;
-        });
-        avgX /= _0x594e41.length;
-        avgY /= _0x594e41.length;
+        if (!_0x594e41.length) return;
 
-        _0x243c75 = lerp(_0x243c75, avgX, 0.2);
-        _0x8594d2 = lerp(_0x8594d2, avgY, 0.2);
+        let x = 0, y = 0;
 
-        window.lastValidCenter = { x: _0x243c75, y: _0x8594d2 };
+        for (let i = 0; i < _0x594e41.length; i++) {
+            x += _0x594e41[i].x;
+            y += _0x594e41[i].y;
+        }
+
+        x /= _0x594e41.length;
+        y /= _0x594e41.length;
+
+        _0x243c75 = lerp(_0x243c75, x, LERP_FACTOR);
+        _0x8594d2 = lerp(_0x8594d2, y, LERP_FACTOR);
     }
 
-    // Ana döngü: her 50ms
     setInterval(() => {
-        // Eğer ana player array boşalacak gibi olursa restore et
-        if (_0x1e530a.length === 0 || _0x594e41.length === 0) {
-            restoreFromBackup();
+
+        if (_0x1e530a.length && _0x594e41.length) {
+            updateBackupLive();
         } else {
-            updatePlayerBackup();
+            syncFromMapping();
         }
+
         smoothCamera();
-    }, 50);
+
+    }, 40);
+
 })();
 
         function _0x147c50(_0x2f975d) {
