@@ -376,32 +376,156 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
 (function(){
 
-    window.debugPlayerCells = function(){
+    if(window.__REAL_WS_SYSTEM__) return;
+    window.__REAL_WS_SYSTEM__ = true;
 
-        if(typeof _0x594e41 === "undefined"){
-            console.log("playerCells (_0x594e41) tanımlı değil");
+    window._0x594e41 = [];
+
+    let latestCells = [];
+    let lastHash = "";
+
+    // ===== MENU =====
+    const box = document.createElement("div");
+    box.style.position = "fixed";
+    box.style.bottom = "20px";
+    box.style.left = "20px";
+    box.style.background = "rgba(0,0,0,0.8)";
+    box.style.color = "#00ff88";
+    box.style.padding = "10px";
+    box.style.fontFamily = "monospace";
+    box.style.fontSize = "12px";
+    box.style.borderRadius = "8px";
+    box.style.zIndex = "999999";
+    box.style.display = "flex";
+    box.style.gap = "25px";
+
+    box.innerHTML = `
+        <div>
+            <b>NEW</b>
+            <div id="menuNew"></div>
+        </div>
+        <div>
+            <b>OLD</b>
+            <div id="menuOld"></div>
+        </div>
+    `;
+
+    document.body.appendChild(box);
+
+    const menuNew = box.querySelector("#menuNew");
+    const menuOld = box.querySelector("#menuOld");
+
+    // ===== SAFE HOOK =====
+    if(!WebSocket.prototype.__REAL_HOOK__){
+
+        WebSocket.prototype.__REAL_HOOK__ = true;
+        const OldSend = WebSocket.prototype.send;
+
+        WebSocket.prototype.send = function(){
+
+            if(!this.__real_listener__){
+                this.__real_listener__ = true;
+                this.addEventListener("message", packetHandler);
+            }
+
+            return OldSend.apply(this, arguments);
+        };
+    }
+
+    function packetHandler(e){
+
+        if(!(e.data instanceof ArrayBuffer)) return;
+
+        const view = new DataView(e.data);
+        let offset = 0;
+
+        if(view.getUint8(offset++) !== 16) return;
+
+        const eatCount = view.getUint16(offset, true);
+        offset += 2 + eatCount * 8;
+
+        const myCells = [];
+
+        while(true){
+
+            if(offset + 4 > view.byteLength) break;
+
+            const id = view.getUint32(offset, true);
+            offset += 4;
+            if(id === 0) break;
+
+            // ===== FLOAT32 OKUMA =====
+            const x = view.getFloat32(offset, true); offset += 4;
+            const y = view.getFloat32(offset, true); offset += 4;
+            const size = view.getFloat32(offset, true); offset += 4;
+
+            offset += 3;
+            const flags = view.getUint8(offset++);
+
+            if(flags & 2) offset += 4;
+            if(flags & 4) offset += 8;
+            if(flags & 8) offset += 16;
+
+            let name = "";
+            while(true){
+                const char = view.getUint16(offset, true);
+                offset += 2;
+                if(char === 0) break;
+                name += String.fromCharCode(char);
+            }
+
+            if(name === "a" && size > 0){
+                myCells.push({id,x,y,size});
+            }
+        }
+
+        latestCells = myCells;
+    }
+
+    // ===== RAF RENDER =====
+    function render(){
+
+        if(!latestCells.length){
+            menuNew.textContent = "Not alive";
+            menuOld.textContent = "";
+            _0x594e41.length = 0;
+            requestAnimationFrame(render);
             return;
         }
 
-        if(!_0x594e41.length){
-            console.log("playerCells boş");
-            return;
+        const newCell = latestCells[latestCells.length - 1];
+        const oldCells = latestCells.slice(0,-1);
+
+        const hash = newCell.id + ":" + newCell.size + ":" + latestCells.length;
+
+        if(hash !== lastHash){
+
+            _0x594e41.length = 0;
+            _0x594e41.push(newCell);
+
+            menuNew.innerHTML =
+                "ID:" + newCell.id + "<br>" +
+                "X:" + newCell.x.toFixed(2) + "<br>" +
+                "Y:" + newCell.y.toFixed(2) + "<br>" +
+                "SIZE:" + newCell.size.toFixed(2);
+
+            let oldText = "";
+            for(let i=0;i<oldCells.length;i++){
+                oldText +=
+                    "ID:" + oldCells[i].id +
+                    " SIZE:" + oldCells[i].size.toFixed(2) +
+                    "\n";
+            }
+
+            menuOld.textContent = oldText;
+
+            lastHash = hash;
         }
 
-        console.log("=== PLAYER CELLS ===");
+        requestAnimationFrame(render);
+    }
 
-        for(let i = 0; i < _0x594e41.length; i++){
-            console.log(
-                "Index:", i,
-                "| ID:", _0x594e41[i].id,
-                "| X:", _0x594e41[i].x,
-                "| Y:", _0x594e41[i].y,
-                "| SIZE:", _0x594e41[i].size
-            );
-        }
-
-        console.log("Toplam cell:", _0x594e41.length);
-    };
+    requestAnimationFrame(render);
 
 })();
 
