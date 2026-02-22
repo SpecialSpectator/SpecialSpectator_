@@ -376,42 +376,40 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
 (function(){
 
-    if(window.__NEWOLD_SYSTEM_ACTIVE__) return;
-    window.__NEWOLD_SYSTEM_ACTIVE__ = true;
+    if(window.__LIVE_SAFE__) return;
+    window.__LIVE_SAFE__ = true;
 
-    // mevcut array referansını koru
     if(typeof _0x594e41 === "undefined"){
         window._0x594e41 = [];
     } else {
         _0x594e41.length = 0;
     }
 
+    let latestCells = [];
+
     // ===== MENU =====
     const box = document.createElement("div");
-    box.id = "liveCellMenu";
     box.style.position = "fixed";
     box.style.bottom = "20px";
     box.style.left = "20px";
-    box.style.background = "rgba(0,0,0,0.85)";
+    box.style.background = "rgba(0,0,0,0.8)";
     box.style.color = "#00ff88";
-    box.style.padding = "15px";
+    box.style.padding = "12px";
     box.style.fontFamily = "monospace";
-    box.style.fontSize = "13px";
-    box.style.borderRadius = "10px";
+    box.style.fontSize = "12px";
+    box.style.borderRadius = "8px";
     box.style.zIndex = "999999";
     box.style.display = "flex";
-    box.style.gap = "40px";
-    box.style.minWidth = "260px";
-    box.style.backdropFilter = "blur(4px)";
+    box.style.gap = "30px";
 
     box.innerHTML = `
-        <div style="min-width:120px">
-            <b style="color:#00ff88">NEW (ACTIVE)</b>
-            <div id="menuNew" style="margin-top:6px"></div>
+        <div>
+            <b>NEW</b>
+            <div id="menuNew"></div>
         </div>
-        <div style="min-width:120px">
-            <b style="color:#888">OLD</b>
-            <div id="menuOld" style="margin-top:6px"></div>
+        <div>
+            <b>OLD</b>
+            <div id="menuOld"></div>
         </div>
     `;
 
@@ -421,114 +419,107 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
     const menuOld = document.getElementById("menuOld");
 
     // ===== SAFE HOOK =====
-    if(!WebSocket.prototype.__LIVE_MENU_HOOKED__){
+    if(!WebSocket.prototype.__HOOKED__){
 
-        WebSocket.prototype.__LIVE_MENU_HOOKED__ = true;
+        WebSocket.prototype.__HOOKED__ = true;
         const OldSend = WebSocket.prototype.send;
 
         WebSocket.prototype.send = function(){
 
-            if(!this.__menu_listener_added__){
-                this.__menu_listener_added__ = true;
-                attachListener(this);
+            if(!this.__listener_added__){
+                this.__listener_added__ = true;
+                this.addEventListener("message", packetHandler);
             }
 
             return OldSend.apply(this, arguments);
         };
     }
 
-    function attachListener(ws){
+    function packetHandler(e){
 
-        ws.addEventListener("message", function(e){
+        if(!(e.data instanceof ArrayBuffer)) return;
 
-            if(!(e.data instanceof ArrayBuffer)) return;
+        const view = new DataView(e.data);
+        let offset = 0;
 
-            const view = new DataView(e.data);
-            let offset = 0;
+        if(view.getUint8(offset++) !== 16) return;
 
-            if(view.getUint8(offset++) !== 16) return;
+        const eatCount = view.getUint16(offset, true);
+        offset += 2 + eatCount * 8;
 
-            const eatCount = view.getUint16(offset, true);
-            offset += 2 + eatCount * 8;
+        const myCells = [];
 
-            const myCells = [];
+        while(true){
 
+            if(offset + 4 > view.byteLength) break;
+
+            const id = view.getUint32(offset, true);
+            offset += 4;
+            if(id === 0) break;
+
+            const x = view.getInt16(offset, true); offset += 2;
+            const y = view.getInt16(offset, true); offset += 2;
+            const size = view.getInt16(offset, true); offset += 2;
+
+            offset += 3;
+            const flags = view.getUint8(offset++);
+
+            if(flags & 2) offset += 4;
+            if(flags & 4) offset += 8;
+            if(flags & 8) offset += 16;
+
+            let name = "";
             while(true){
-
-                if(offset + 4 > view.byteLength) break;
-
-                const id = view.getUint32(offset, true);
-                offset += 4;
-                if(id === 0) break;
-
-                const x = view.getInt16(offset, true); offset += 2;
-                const y = view.getInt16(offset, true); offset += 2;
-                const size = view.getInt16(offset, true); offset += 2;
-
-                offset += 3;
-
-                const flags = view.getUint8(offset++);
-
-                if(flags & 2) offset += 4;
-                if(flags & 4) offset += 8;
-                if(flags & 8) offset += 16;
-
-                let name = "";
-                while(true){
-                    const char = view.getUint16(offset, true);
-                    offset += 2;
-                    if(char === 0) break;
-                    name += String.fromCharCode(char);
-                }
-
-                if(name === "a" && size > 0){
-                    myCells.push({ id, x, y, size });
-                }
+                const char = view.getUint16(offset, true);
+                offset += 2;
+                if(char === 0) break;
+                name += String.fromCharCode(char);
             }
 
-            // ===== TEMİZ DURUM =====
-            if(myCells.length === 0){
-                menuNew.innerHTML = "Not alive";
-                menuOld.innerHTML = "";
-                _0x594e41.length = 0;
-                return;
+            if(name === "a" && size > 0){
+                myCells.push({id,x,y,size});
             }
+        }
 
-            // ===== EN SON = NEW =====
-            const newCell = myCells[myCells.length - 1];
-            const oldCells = myCells.slice(0, -1);
-
-            // sadece NEW array'de
-            _0x594e41.length = 0;
-            _0x594e41.push(newCell);
-
-            // ===== RENDER =====
-            menuNew.innerHTML =
-                "ID: " + newCell.id + "<br>" +
-                "X: " + newCell.x + "<br>" +
-                "Y: " + newCell.y + "<br>" +
-                "SIZE: " + newCell.size;
-
-            let oldHtml = "";
-            for(let i=0;i<oldCells.length;i++){
-                const c = oldCells[i];
-                oldHtml +=
-                    "ID: " + c.id + "<br>" +
-                    "X: " + c.x + "<br>" +
-                    "Y: " + c.y + "<br>" +
-                    "SIZE: " + c.size +
-                    "<br><hr style='border:0;border-top:1px solid #222'>";
-            }
-
-            menuOld.innerHTML = oldHtml;
-
-        });
-
-        console.log("LIVE NEW/OLD SYSTEM READY");
+        latestCells = myCells;
     }
 
-})();
+    // ===== RENDER 60ms =====
+    setInterval(function(){
 
+        if(!latestCells.length){
+            menuNew.innerHTML = "Not alive";
+            menuOld.innerHTML = "";
+            _0x594e41.length = 0;
+            return;
+        }
+
+        const newCell = latestCells[latestCells.length - 1];
+        const oldCells = latestCells.slice(0, -1);
+
+        _0x594e41.length = 0;
+        _0x594e41.push(newCell);
+
+        menuNew.innerHTML =
+            "ID:" + newCell.id + "<br>" +
+            "X:" + newCell.x + "<br>" +
+            "Y:" + newCell.y + "<br>" +
+            "SIZE:" + newCell.size;
+
+        let oldHtml = "";
+        for(let i=0;i<oldCells.length;i++){
+            const c = oldCells[i];
+            oldHtml +=
+                "ID:" + c.id + "<br>" +
+                "SIZE:" + c.size +
+                "<br><hr>";
+        }
+
+        menuOld.innerHTML = oldHtml;
+
+    }, 60);
+
+})();
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
                 _0x2c4e3a = _0x5e3f8e;
