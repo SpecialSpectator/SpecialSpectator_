@@ -376,8 +376,8 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
 (function(){
 
-    if(window.__LIVE_SAFE__) return;
-    window.__LIVE_SAFE__ = true;
+    if(window.__RAF_CELL_SYSTEM__) return;
+    window.__RAF_CELL_SYSTEM__ = true;
 
     if(typeof _0x594e41 === "undefined"){
         window._0x594e41 = [];
@@ -386,21 +386,22 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
     }
 
     let latestCells = [];
+    let lastRenderHash = "";
 
-    // ===== MENU =====
+    // ===== MENU CREATE =====
     const box = document.createElement("div");
     box.style.position = "fixed";
     box.style.bottom = "20px";
     box.style.left = "20px";
     box.style.background = "rgba(0,0,0,0.8)";
     box.style.color = "#00ff88";
-    box.style.padding = "12px";
+    box.style.padding = "10px";
     box.style.fontFamily = "monospace";
     box.style.fontSize = "12px";
     box.style.borderRadius = "8px";
     box.style.zIndex = "999999";
     box.style.display = "flex";
-    box.style.gap = "30px";
+    box.style.gap = "25px";
 
     box.innerHTML = `
         <div>
@@ -415,19 +416,19 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
     document.body.appendChild(box);
 
-    const menuNew = document.getElementById("menuNew");
-    const menuOld = document.getElementById("menuOld");
+    const menuNew = box.querySelector("#menuNew");
+    const menuOld = box.querySelector("#menuOld");
 
     // ===== SAFE HOOK =====
-    if(!WebSocket.prototype.__HOOKED__){
+    if(!WebSocket.prototype.__RAF_HOOKED__){
 
-        WebSocket.prototype.__HOOKED__ = true;
+        WebSocket.prototype.__RAF_HOOKED__ = true;
         const OldSend = WebSocket.prototype.send;
 
         WebSocket.prototype.send = function(){
 
-            if(!this.__listener_added__){
-                this.__listener_added__ = true;
+            if(!this.__raf_listener__){
+                this.__raf_listener__ = true;
                 this.addEventListener("message", packetHandler);
             }
 
@@ -484,40 +485,53 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         latestCells = myCells;
     }
 
-    // ===== RENDER 60ms =====
-    setInterval(function(){
+    // ===== RAF LOOP =====
+    function render(){
 
         if(!latestCells.length){
-            menuNew.innerHTML = "Not alive";
-            menuOld.innerHTML = "";
-            _0x594e41.length = 0;
+            if(lastRenderHash !== "dead"){
+                menuNew.textContent = "Not alive";
+                menuOld.textContent = "";
+                _0x594e41.length = 0;
+                lastRenderHash = "dead";
+            }
+            requestAnimationFrame(render);
             return;
         }
 
         const newCell = latestCells[latestCells.length - 1];
-        const oldCells = latestCells.slice(0, -1);
+        const oldCells = latestCells.slice(0,-1);
 
-        _0x594e41.length = 0;
-        _0x594e41.push(newCell);
+        const hash = newCell.id + ":" + newCell.size + ":" + latestCells.length;
 
-        menuNew.innerHTML =
-            "ID:" + newCell.id + "<br>" +
-            "X:" + newCell.x + "<br>" +
-            "Y:" + newCell.y + "<br>" +
-            "SIZE:" + newCell.size;
+        // sadece değişince render
+        if(hash !== lastRenderHash){
 
-        let oldHtml = "";
-        for(let i=0;i<oldCells.length;i++){
-            const c = oldCells[i];
-            oldHtml +=
-                "ID:" + c.id + "<br>" +
-                "SIZE:" + c.size +
-                "<br><hr>";
+            _0x594e41.length = 0;
+            _0x594e41.push(newCell);
+
+            menuNew.innerHTML =
+                "ID:" + newCell.id + "<br>" +
+                "X:" + newCell.x + "<br>" +
+                "Y:" + newCell.y + "<br>" +
+                "SIZE:" + newCell.size;
+
+            let oldText = "";
+            for(let i=0;i<oldCells.length;i++){
+                oldText +=
+                    "ID:" + oldCells[i].id +
+                    " SIZE:" + oldCells[i].size +
+                    "\n";
+            }
+
+            menuOld.textContent = oldText;
+            lastRenderHash = hash;
         }
 
-        menuOld.innerHTML = oldHtml;
+        requestAnimationFrame(render);
+    }
 
-    }, 60);
+    requestAnimationFrame(render);
 
 })();
         function _0x147c50(_0x2f975d) {
