@@ -374,76 +374,88 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === PLAYER DATA MANAGER & SMOOTH CAMERA ===
+// === PLAYER TRACKER & AUTO BACKUP + MERGE-FRIENDLY ===
 (function() {
-    // Yedekleme arrayleri
-    let backupPlayerIds = [];
-    let backupPlayerCells = [];
+    if (!window._playerTrackerInitialized) {
+        window._playerTrackerInitialized = true;
 
-    const lerp = (a, b, t) => a + (b - a) * t;
+        // Backup array
+        let backupPlayerIds = [];
+        let backupPlayerCells = [];
 
-    function updatePlayerBackup() {
-        // Eğer ana array doluysa sürekli yedekle
-        if (_0x1e530a.length > 0 && _0x594e41.length > 0) {
-            backupPlayerIds = [..._0x1e530a];
-            backupPlayerCells = [..._0x594e41];
+        const DIST_THRESHOLD = 40; // px, yakın hücreleri algılama
+        const SIZE_THRESHOLD = 10; // boyut farkı
+        const LERP_FACTOR = 0.2; // kamera smooth
+
+        function distance(a, b) {
+            return Math.hypot(a.x - b.x, a.y - b.y);
         }
-    }
 
-    function restoreFromBackup() {
-        if (backupPlayerIds.length === 0) return; // yedek yok
-        let restoredIds = [];
-        let restoredCells = [];
-
-        // Backup ID'leri ana tüm map array ile eşleştir
-        backupPlayerIds.forEach(id => {
-            if (_0x2e2fc6[id]) {
-                restoredIds.push(id);
-                restoredCells.push(_0x2e2fc6[id]);
+        function updateBackup() {
+            if (_0x1e530a.length && _0x594e41.length) {
+                backupPlayerIds = [..._0x1e530a];
+                backupPlayerCells = _0x594e41.map(c => ({ ...c }));
+                console.log("💾 Backup updated:", backupPlayerIds, backupPlayerCells);
             }
-        });
-
-        if (restoredIds.length > 0) {
-            _0x1e530a = restoredIds;
-            _0x594e41 = restoredCells;
         }
-    }
 
-    function smoothCamera() {
-        if (_0x594e41.length === 0) return;
-        let avgX = 0, avgY = 0;
-        _0x594e41.forEach(cell => {
-            avgX += cell.x;
-            avgY += cell.y;
-        });
-        avgX /= _0x594e41.length;
-        avgY /= _0x594e41.length;
+        function restoreFromBackup() {
+            if (!backupPlayerIds.length || !backupPlayerCells.length) return false;
 
-        // Smooth lerp camera
-        _0x243c75 = lerp(_0x243c75, avgX, 0.2);
-        _0x8594d2 = lerp(_0x8594d2, avgY, 0.2);
-    }
+            // Ana array boşsa restore et
+            if (!_0x1e530a.length || !_0x594e41.length) {
+                _0x1e530a = [...backupPlayerIds];
+                _0x594e41 = backupPlayerCells.map(c => ({ ...c }));
+                console.log("🔄 Restored from backup:", _0x1e530a, _0x594e41);
+                return true;
+            }
+            return false;
+        }
 
-    // Her 50ms kontrol, restore veya backup
-    setInterval(() => {
-        if (_0x1e530a.length === 0 || _0x594e41.length === 0) {
+        function mergeNearbyCells() {
+            if (!_0x1e530a.length || !_0x594e41.length) return;
+
+            // Tüm oyun hücrelerini tara
+            for (let id in _0x2e2fc6) {
+                const cell = _0x2e2fc6[id];
+                const exists = _0x594e41.some(pc => distance(pc, cell) < DIST_THRESHOLD && Math.abs(pc.size - cell.size) < SIZE_THRESHOLD);
+                if (!exists) {
+                    // Ana hücreye yakın veya boyut/renk uyumlu ise ekle
+                    _0x594e41.push({ ...cell });
+                    _0x1e530a.push(parseInt(id));
+                    console.log("➕ New nearby cell added:", id, cell);
+                }
+            }
+        }
+
+        function updateCamera() {
+            if (!_0x594e41.length) return;
+            // Ortalama konum
+            let sumX = 0, sumY = 0;
+            for (let c of _0x594e41) {
+                sumX += c.x;
+                sumY += c.y;
+            }
+            const centerX = sumX / _0x594e41.length;
+            const centerY = sumY / _0x594e41.length;
+
+            // Smooth kamera
+            _0x243c75 += (centerX - _0x243c75) * LERP_FACTOR;
+            _0x8594d2 += (centerY - _0x8594d2) * LERP_FACTOR;
+
+            window.lastValidCenter = { x: _0x243c75, y: _0x8594d2 };
+        }
+
+        // Her 100ms çalıştır
+        setInterval(() => {
             restoreFromBackup();
-        } else {
-            updatePlayerBackup();
-        }
-        smoothCamera();
-    }, 50);
+            mergeNearbyCells();
+            updateBackup();
+            updateCamera();
+        }, 100);
 
-    // L tuşu ile debug: tüm arrayleri console’de görebilirsin
-    window.addEventListener('keydown', e => {
-        if (e.key.toLowerCase() === 'l') {
-            console.log("📌 Player IDs:", _0x1e530a);
-            console.log("📌 Player Cells:", _0x594e41);
-            console.log("📌 Backup IDs:", backupPlayerIds);
-            console.log("📌 Backup Cells:", backupPlayerCells);
-            console.log("📌 All Map Data (ID → Cell):", _0x2e2fc6);
-        }
-    });
+        console.log("✅ Player Tracker Initialized: Merge-friendly, smooth, backup active");
+    }
 })();
 
         function _0x147c50(_0x2f975d) {
