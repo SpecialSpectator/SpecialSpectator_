@@ -374,36 +374,33 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === FULL STABLE CAMERA + ZOOM LOCK ===
+// === BACKUP + INSTANT SNAP CAMERA (NO SMOOTHING) ===
 (function() {
 
     let backupIds = [];
-    let lastCenterX = 0;
-    let lastCenterY = 0;
-    let lastZoom = 1;
-
-    const POS_LERP = 0.18;
-    const ZOOM_LERP = 0.12;
-
-    const lerp = (a, b, t) => a + (b - a) * t;
 
     function updateBackup() {
-        if (_0x1e530a.length && _0x594e41.length) {
+        if (_0x1e530a && _0x1e530a.length &&
+            _0x594e41 && _0x594e41.length) {
+
             backupIds = [..._0x1e530a];
         }
     }
 
     function restoreIfNeeded() {
-        if (!_0x1e530a.length || !_0x594e41.length) {
 
-            if (!backupIds.length) return;
+        if ((!_0x1e530a || !_0x1e530a.length ||
+            !_0x594e41 || !_0x594e41.length) &&
+            backupIds.length) {
 
             let ids = [];
             let cells = [];
 
             for (let i = 0; i < backupIds.length; i++) {
+
                 const id = backupIds[i];
                 const mapped = _0x2e2fc6[id];
+
                 if (mapped) {
                     ids.push(id);
                     cells.push(mapped);
@@ -417,61 +414,31 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         }
     }
 
-    function updateCameraAndZoom() {
+    function updateCameraInstant() {
 
-        if (!_0x594e41.length) {
-            _0x243c75 = lastCenterX;
-            _0x8594d2 = lastCenterY;
-            return;
-        }
+        if (!_0x594e41 || !_0x594e41.length) return;
 
-        let x = 0, y = 0, size = 0;
+        let x = 0;
+        let y = 0;
 
         for (let i = 0; i < _0x594e41.length; i++) {
-            const c = _0x594e41[i];
-            x += c.x;
-            y += c.y;
-            size += c.size || c.radius || 0;
+            x += _0x594e41[i].x;
+            y += _0x594e41[i].y;
         }
 
         x /= _0x594e41.length;
         y /= _0x594e41.length;
-        size /= _0x594e41.length;
 
-        // POSITION SMOOTH
-        _0x243c75 = lerp(_0x243c75, x, POS_LERP);
-        _0x8594d2 = lerp(_0x8594d2, y, POS_LERP);
-
-        lastCenterX = _0x243c75;
-        lastCenterY = _0x8594d2;
-
-        // ---- ZOOM STABILIZER ----
-        if (size > 0) {
-
-            // oyunun kullandığı zoom değişkeni neyse onu buraya yaz
-            // örnek: _0xzoomVar
-
-            let targetZoom = 1 / (size * 0.01 + 1);
-
-            if (typeof _0x3a1f4c !== "undefined") {
-                _0x3a1f4c = lerp(_0x3a1f4c, targetZoom, ZOOM_LERP);
-                lastZoom = _0x3a1f4c;
-            }
-
-        } else {
-            if (typeof _0x3a1f4c !== "undefined") {
-                _0x3a1f4c = lastZoom;
-            }
-        }
+        // 🔥 NO SMOOTHING — DIRECT SNAP
+        _0x243c75 = x;
+        _0x8594d2 = y;
     }
 
-    setInterval(() => {
-
+    setInterval(function() {
         restoreIfNeeded();
         updateBackup();
-        updateCameraAndZoom();
-
-    }, 40);
+        updateCameraInstant();
+    }, 16); // 60fps
 
 })();
 
