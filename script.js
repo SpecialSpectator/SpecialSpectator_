@@ -375,10 +375,10 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
 (function() {
-    window.playerCells = [];
+    let focusCell = null;
 
+    // WebSocket hook
     const OldWS = WebSocket;
-
     WebSocket = function(url, protocols) {
         const ws = new OldWS(url, protocols);
 
@@ -388,14 +388,12 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             const view = new DataView(e.data);
             let offset = 0;
 
-            // OPCODE 16 = update nodes
-            if (view.getUint8(offset++) !== 16) return;
+            if (view.getUint8(offset++) !== 16) return; // OPCODE 16
 
-            // Eat merge/kill events
             const eatCount = view.getUint16(offset, true);
             offset += 2 + eatCount * 8;
 
-            const newPlayerCells = [];
+            let lastCell = null;
 
             while (true) {
                 if (offset + 4 > view.byteLength) break;
@@ -407,41 +405,45 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                 const y = view.getInt16(offset, true); offset += 2;
                 const size = view.getInt16(offset, true); offset += 2;
 
-                // Skip extra data (rgb + flags)
-                offset += 4; // 3 byte rgb + 1 byte flags
+                offset += 4; // skip rgb + flags
                 const flags = view.getUint8(offset - 1);
-
                 if (flags & 2) offset += 4;
                 if (flags & 4) offset += 8;
                 if (flags & 8) offset += 16;
 
-                // Skip name completely
-                while (true) {
-                    const char = view.getUint16(offset, true);
-                    offset += 2;
-                    if (char === 0) break;
-                }
+                while (view.getUint16(offset, true) !== 0) offset += 2; // skip name
+                offset += 2;
 
-                // Sadece x, y, size ve id ekle
-                newPlayerCells.push({ id, x, y, size });
+                lastCell = {x, y};
             }
 
-            // Güncel playerCells array
-            window.playerCells = newPlayerCells;
-
-            // Test amaçlı console
-            console.clear();
-            console.log("=== PLAYER CELLS ===");
-            newPlayerCells.forEach((cell, i) => {
-                console.log(`Index: ${i} | ID: ${cell.id} | X: ${cell.x} | Y: ${cell.y} | SIZE: ${cell.size}`);
-            });
-            console.log(`Toplam cell: ${newPlayerCells.length}`);
+            focusCell = lastCell; // en son gelen aktif hücreyi kaydet
         });
 
         return ws;
     };
 
-    console.log("✅ PlayerCells WebSocket parser loaded");
+    function updateCamera() {
+        requestAnimationFrame(updateCamera);
+
+        if (!focusCell) return;
+
+        // ===== CAMERAYI ZORLA FOCUS EDİN =====
+        if (typeof window.ctx !== "undefined") {
+            const ctx = window.ctx; // senin canvas context
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
+            ctx.translate(
+                ctx.canvas.width / 2 - focusCell.x,
+                ctx.canvas.height / 2 - focusCell.y
+            );
+        }
+
+        // Eğer senin oyun zaten global cameraX/cameraY kullanıyorsa:
+        window.cameraX = focusCell.x;
+        window.cameraY = focusCell.y;
+    }
+
+    updateCamera();
 })();
 
         function _0x147c50(_0x2f975d) {
