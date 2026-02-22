@@ -374,18 +374,17 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === PLAYER TRACKER & AUTO BACKUP + MERGE-FRIENDLY ===
+// === LIGHTWEIGHT PLAYER TRACKER ===
 (function() {
-    if (!window._playerTrackerInitialized) {
-        window._playerTrackerInitialized = true;
+    if (!window._playerTrackerLight) {
+        window._playerTrackerLight = true;
 
-        // Backup array
-        let backupPlayerIds = [];
-        let backupPlayerCells = [];
+        let backupIds = [];
+        let backupCells = [];
 
-        const DIST_THRESHOLD = 40; // px, yakın hücreleri algılama
+        const DIST_THRESHOLD = 30; // yakınlık px
         const SIZE_THRESHOLD = 10; // boyut farkı
-        const LERP_FACTOR = 0.2; // kamera smooth
+        const LERP = 0.2;
 
         function distance(a, b) {
             return Math.hypot(a.x - b.x, a.y - b.y);
@@ -393,68 +392,53 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
         function updateBackup() {
             if (_0x1e530a.length && _0x594e41.length) {
-                backupPlayerIds = [..._0x1e530a];
-                backupPlayerCells = _0x594e41.map(c => ({ ...c }));
-                console.log("💾 Backup updated:", backupPlayerIds, backupPlayerCells);
+                backupIds = [..._0x1e530a];
+                backupCells = _0x594e41.map(c => ({ ...c }));
             }
         }
 
-        function restoreFromBackup() {
-            if (!backupPlayerIds.length || !backupPlayerCells.length) return false;
+        function restoreIfEmpty() {
+            if ((!_0x1e530a.length || !_0x594e41.length) && backupIds.length) {
+                // backup'dan doldur
+                _0x1e530a = [...backupIds];
+                _0x594e41 = backupCells.map(c => ({ ...c }));
 
-            // Ana array boşsa restore et
-            if (!_0x1e530a.length || !_0x594e41.length) {
-                _0x1e530a = [...backupPlayerIds];
-                _0x594e41 = backupPlayerCells.map(c => ({ ...c }));
-                console.log("🔄 Restored from backup:", _0x1e530a, _0x594e41);
-                return true;
-            }
-            return false;
-        }
-
-        function mergeNearbyCells() {
-            if (!_0x1e530a.length || !_0x594e41.length) return;
-
-            // Tüm oyun hücrelerini tara
-            for (let id in _0x2e2fc6) {
-                const cell = _0x2e2fc6[id];
-                const exists = _0x594e41.some(pc => distance(pc, cell) < DIST_THRESHOLD && Math.abs(pc.size - cell.size) < SIZE_THRESHOLD);
-                if (!exists) {
-                    // Ana hücreye yakın veya boyut/renk uyumlu ise ekle
-                    _0x594e41.push({ ...cell });
-                    _0x1e530a.push(parseInt(id));
-                    console.log("➕ New nearby cell added:", id, cell);
+                // merge: backup hücrelerine yakın olanları ekle
+                for (let id in _0x2e2fc6) {
+                    const cell = _0x2e2fc6[id];
+                    if (_0x594e41.some(pc => distance(pc, cell) < DIST_THRESHOLD && Math.abs(pc.size - cell.size) < SIZE_THRESHOLD)) continue;
+                    if (distance(backupCells[0], cell) < DIST_THRESHOLD * 2) { 
+                        _0x1e530a.push(parseInt(id));
+                        _0x594e41.push({ ...cell });
+                    }
                 }
             }
         }
 
-        function updateCamera() {
+        function smoothCamera() {
             if (!_0x594e41.length) return;
-            // Ortalama konum
             let sumX = 0, sumY = 0;
             for (let c of _0x594e41) {
                 sumX += c.x;
                 sumY += c.y;
             }
-            const centerX = sumX / _0x594e41.length;
-            const centerY = sumY / _0x594e41.length;
+            const cx = sumX / _0x594e41.length;
+            const cy = sumY / _0x594e41.length;
 
-            // Smooth kamera
-            _0x243c75 += (centerX - _0x243c75) * LERP_FACTOR;
-            _0x8594d2 += (centerY - _0x8594d2) * LERP_FACTOR;
+            _0x243c75 += (cx - _0x243c75) * LERP;
+            _0x8594d2 += (cy - _0x8594d2) * LERP;
 
             window.lastValidCenter = { x: _0x243c75, y: _0x8594d2 };
         }
 
-        // Her 100ms çalıştır
+        // Ana döngü: 100ms yerine 200ms
         setInterval(() => {
-            restoreFromBackup();
-            mergeNearbyCells();
+            restoreIfEmpty();
             updateBackup();
-            updateCamera();
-        }, 100);
+            smoothCamera();
+        }, 200);
 
-        console.log("✅ Player Tracker Initialized: Merge-friendly, smooth, backup active");
+        console.log("✅ Lightweight Player Tracker initialized");
     }
 })();
 
