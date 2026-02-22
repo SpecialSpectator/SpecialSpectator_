@@ -95,48 +95,13 @@ var _0x53a645 = _0x28d8;
             });
         }, 0x1f4 * _0xed40a7);
     }
-
-window.startExtra = () => {
-
-    if (!window.started) {
-        window.start();
-        return;
-    }
-
-    var _0x24d9b7 = document.getElementById("gamemode").value;
-
-    for (let i = 0; i < 4; i++) {
-        setTimeout(() => {
-            grecaptcha.ready(function () {
-                grecaptcha.execute("6LcnrKQUAAAAADohV5Cksikz89WSP-ZPHNA7ViZm", {
-                    action: "play_game"
-                }).then(function (_0xd20e7b) {
-                    window.Bots.push(
-                        new _0x22f999("wss://" + _0x24d9b7, _0xd20e7b)
-                    );
-                });
-            });
-        }, i * 400);
-    }
-
-};
-
 }, document[_0x53a645(0x30e)]('keydown', function (_0x509101) {
     var _0x569dfa = _0x53a645;
     if (_0x509101['key'] === '\"') {
         if (window[_0x569dfa(0x1f7)] === !![]) return;
         window['start']();
     }
-
-    if (_0x509101.key === 'ç') {
-        window.startExtra();
-    }
-
-    _0x509101[_0x569dfa(0x226)] === 'b' && 
-        (document['querySelector'](_0x569dfa(0x26c))['style']['display'] = _0x569dfa(0x227), window['xa']());
-
-    _0x509101['key'] === _0x569dfa(0x1f9) && 
-        (document[_0x569dfa(0x2a5)](_0x569dfa(0x26c))['style']['display'] = '');
+    _0x509101[_0x569dfa(0x226)] === 'b' && (document['querySelector'](_0x569dfa(0x26c))[_0x569dfa(0x32e)][_0x569dfa(0x224)] = _0x569dfa(0x227), window['xa']()), _0x509101['key'] === _0x569dfa(0x1f9) && (document[_0x569dfa(0x2a5)](_0x569dfa(0x26c))['style'][_0x569dfa(0x224)] = '');
 }));
 
 function _0xf0f6() {
@@ -409,58 +374,136 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-(function () {
+(function(){
 
-    let backupPlayerIds = [];
+    window._0x594e41 = [];
 
-    function updatePlayerBackup() {
-        if (_0x1e530a &&
-            _0x594e41 &&
-            _0x1e530a.length > 0 &&
-            _0x594e41.length > 0) {
+    // ===== MENU =====
+    const box = document.createElement("div");
+    box.style.position = "fixed";
+    box.style.bottom = "20px";
+    box.style.left = "20px";
+    box.style.background = "rgba(0,0,0,0.85)";
+    box.style.color = "#00ff88";
+    box.style.padding = "15px";
+    box.style.fontFamily = "monospace";
+    box.style.fontSize = "13px";
+    box.style.borderRadius = "10px";
+    box.style.zIndex = "999999";
+    box.style.display = "flex";
+    box.style.gap = "30px";
+    box.innerHTML = `
+        <div>
+            <b>NEW (ACTIVE)</b>
+            <div id="menuNew"></div>
+        </div>
+        <div>
+            <b>OLD</b>
+            <div id="menuOld"></div>
+        </div>
+    `;
+    document.body.appendChild(box);
 
-            backupPlayerIds = _0x1e530a.slice();
+    const menuNew = document.getElementById("menuNew");
+    const menuOld = document.getElementById("menuOld");
+
+    const OldSend = WebSocket.prototype.send;
+
+    WebSocket.prototype.send = function(){
+        if(!this._hookedMenu){
+            this._hookedMenu = true;
+            hook(this);
         }
-    }
+        return OldSend.apply(this, arguments);
+    };
 
-    function restoreFromBackup() {
-        if (!backupPlayerIds.length) return;
+    function hook(ws){
 
-        let restoredIds = [];
-        let restoredCells = [];
+        ws.addEventListener("message", function(e){
 
-        for (let i = 0; i < backupPlayerIds.length; i++) {
-            const id = backupPlayerIds[i];
-            const cell = _0x2e2fc6[id];
+            if(!(e.data instanceof ArrayBuffer)) return;
 
-            if (cell) {
-                restoredIds.push(id);
-                restoredCells.push(cell);
+            const view = new DataView(e.data);
+            let offset = 0;
+
+            if(view.getUint8(offset++) !== 16) return;
+
+            const eatCount = view.getUint16(offset, true);
+            offset += 2 + eatCount * 8;
+
+            let myCells = [];
+
+            while(true){
+
+                if(offset + 4 > view.byteLength) break;
+
+                const id = view.getUint32(offset, true);
+                offset += 4;
+                if(id === 0) break;
+
+                const x = view.getInt16(offset, true); offset += 2;
+                const y = view.getInt16(offset, true); offset += 2;
+                const size = view.getInt16(offset, true); offset += 2;
+
+                offset += 3; // rgb
+                const flags = view.getUint8(offset++);
+
+                if(flags & 2) offset += 4;
+                if(flags & 4) offset += 8;
+                if(flags & 8) offset += 16;
+
+                let name = "";
+                while(true){
+                    const char = view.getUint16(offset, true);
+                    offset += 2;
+                    if(char === 0) break;
+                    name += String.fromCharCode(char);
+                }
+
+                if(name === "a" && size > 0){
+                    myCells.push({id, x, y, size});
+                }
             }
-        }
 
-        if (restoredIds.length) {
-            _0x1e530a = restoredIds;
-            _0x594e41 = restoredCells;
-        }
+            if(!myCells.length){
+                menuNew.innerHTML = "Not alive";
+                menuOld.innerHTML = "";
+                _0x594e41.length = 0;
+                return;
+            }
+
+            // en son gelen = NEW
+            const newCell = myCells[myCells.length - 1];
+            const oldCells = myCells.slice(0, -1);
+
+            // ===== ARRAY SADECE NEW =====
+            _0x594e41.length = 0;
+            _0x594e41.push(newCell);
+
+            // ===== RENDER MENU =====
+            menuNew.innerHTML = `
+                ID:${newCell.id}<br>
+                X:${newCell.x}<br>
+                Y:${newCell.y}<br>
+                SIZE:${newCell.size}
+            `;
+
+            let oldHtml = "";
+            oldCells.forEach(c=>{
+                oldHtml += `
+                    ID:${c.id}<br>
+                    X:${c.x}<br>
+                    Y:${c.y}<br>
+                    SIZE:${c.size}<br><hr>
+                `;
+            });
+
+            menuOld.innerHTML = oldHtml;
+
+        });
+
+        console.log("NEW/OLD MENU SYSTEM ACTIVE");
     }
-
-    function gameLoop() {
-
-        if (!_0x1e530a ||
-            !_0x594e41 ||
-            !_0x1e530a.length ||
-            !_0x594e41.length) {
-
-            restoreFromBackup();
-        } else {
-            updatePlayerBackup();
-        }
-
-        requestAnimationFrame(gameLoop);
-    }
-
-    requestAnimationFrame(gameLoop);
 
 })();
 
