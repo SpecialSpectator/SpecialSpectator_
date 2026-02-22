@@ -374,62 +374,55 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-// === ULTRA STABLE PLAYER MANAGER ===
+// === HARD LOCK CAMERA + SAFE RESTORE ===
 (function() {
 
     let backupIds = [];
-    let backupCells = [];
+    let lastCenterX = 0;
+    let lastCenterY = 0;
 
     const LERP_FACTOR = 0.18;
 
     const lerp = (a, b, t) => a + (b - a) * t;
 
-    function syncFromMapping() {
-        if (!backupIds.length) return;
-
-        let syncedIds = [];
-        let syncedCells = [];
-
-        for (let i = 0; i < backupIds.length; i++) {
-            const id = backupIds[i];
-            const mapped = _0x2e2fc6[id];
-            if (mapped) {
-                syncedIds.push(id);
-                syncedCells.push(mapped);
-            }
-        }
-
-        if (syncedIds.length) {
-            _0x1e530a = syncedIds;
-            _0x594e41 = syncedCells;
+    function updateBackup() {
+        if (_0x1e530a.length && _0x594e41.length) {
+            backupIds = [..._0x1e530a];
         }
     }
 
-    function updateBackupLive() {
-        if (_0x1e530a.length && _0x594e41.length) {
+    function restoreIfNeeded() {
+        if (!_0x1e530a.length || !_0x594e41.length) {
 
-            // mapping ile birebir senkron al (merge sonrası doğru veri için)
-            let freshIds = [];
-            let freshCells = [];
+            if (!backupIds.length) return;
 
-            for (let i = 0; i < _0x1e530a.length; i++) {
-                const id = _0x1e530a[i];
+            let restoredIds = [];
+            let restoredCells = [];
+
+            for (let i = 0; i < backupIds.length; i++) {
+                const id = backupIds[i];
                 const mapped = _0x2e2fc6[id];
                 if (mapped) {
-                    freshIds.push(id);
-                    freshCells.push(mapped);
+                    restoredIds.push(id);
+                    restoredCells.push(mapped);
                 }
             }
 
-            if (freshIds.length) {
-                backupIds = freshIds;
-                backupCells = freshCells;
+            if (restoredIds.length) {
+                _0x1e530a = restoredIds;
+                _0x594e41 = restoredCells;
             }
         }
     }
 
-    function smoothCamera() {
-        if (!_0x594e41.length) return;
+    function updateCamera() {
+
+        // Eğer hücre yoksa kamera SABİT kalacak
+        if (!_0x594e41.length) {
+            _0x243c75 = lastCenterX;
+            _0x8594d2 = lastCenterY;
+            return;
+        }
 
         let x = 0, y = 0;
 
@@ -443,17 +436,16 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
         _0x243c75 = lerp(_0x243c75, x, LERP_FACTOR);
         _0x8594d2 = lerp(_0x8594d2, y, LERP_FACTOR);
+
+        lastCenterX = _0x243c75;
+        lastCenterY = _0x8594d2;
     }
 
     setInterval(() => {
 
-        if (_0x1e530a.length && _0x594e41.length) {
-            updateBackupLive();
-        } else {
-            syncFromMapping();
-        }
-
-        smoothCamera();
+        restoreIfNeeded();   // önce restore
+        updateBackup();      // sonra yedek güncelle
+        updateCamera();      // en son kamera
 
     }, 40);
 
