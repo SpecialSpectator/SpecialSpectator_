@@ -376,10 +376,19 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
 (function(){
 
-    window._0x594e41 = [];
+    if(window.__NEWOLD_SYSTEM_ACTIVE__) return;
+    window.__NEWOLD_SYSTEM_ACTIVE__ = true;
+
+    // mevcut array referansını koru
+    if(typeof _0x594e41 === "undefined"){
+        window._0x594e41 = [];
+    } else {
+        _0x594e41.length = 0;
+    }
 
     // ===== MENU =====
     const box = document.createElement("div");
+    box.id = "liveCellMenu";
     box.style.position = "fixed";
     box.style.bottom = "20px";
     box.style.left = "20px";
@@ -391,33 +400,44 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
     box.style.borderRadius = "10px";
     box.style.zIndex = "999999";
     box.style.display = "flex";
-    box.style.gap = "30px";
+    box.style.gap = "40px";
+    box.style.minWidth = "260px";
+    box.style.backdropFilter = "blur(4px)";
+
     box.innerHTML = `
-        <div>
-            <b>NEW (ACTIVE)</b>
-            <div id="menuNew"></div>
+        <div style="min-width:120px">
+            <b style="color:#00ff88">NEW (ACTIVE)</b>
+            <div id="menuNew" style="margin-top:6px"></div>
         </div>
-        <div>
-            <b>OLD</b>
-            <div id="menuOld"></div>
+        <div style="min-width:120px">
+            <b style="color:#888">OLD</b>
+            <div id="menuOld" style="margin-top:6px"></div>
         </div>
     `;
+
     document.body.appendChild(box);
 
     const menuNew = document.getElementById("menuNew");
     const menuOld = document.getElementById("menuOld");
 
-    const OldSend = WebSocket.prototype.send;
+    // ===== SAFE HOOK =====
+    if(!WebSocket.prototype.__LIVE_MENU_HOOKED__){
 
-    WebSocket.prototype.send = function(){
-        if(!this._hookedMenu){
-            this._hookedMenu = true;
-            hook(this);
-        }
-        return OldSend.apply(this, arguments);
-    };
+        WebSocket.prototype.__LIVE_MENU_HOOKED__ = true;
+        const OldSend = WebSocket.prototype.send;
 
-    function hook(ws){
+        WebSocket.prototype.send = function(){
+
+            if(!this.__menu_listener_added__){
+                this.__menu_listener_added__ = true;
+                attachListener(this);
+            }
+
+            return OldSend.apply(this, arguments);
+        };
+    }
+
+    function attachListener(ws){
 
         ws.addEventListener("message", function(e){
 
@@ -431,7 +451,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             const eatCount = view.getUint16(offset, true);
             offset += 2 + eatCount * 8;
 
-            let myCells = [];
+            const myCells = [];
 
             while(true){
 
@@ -445,7 +465,8 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                 const y = view.getInt16(offset, true); offset += 2;
                 const size = view.getInt16(offset, true); offset += 2;
 
-                offset += 3; // rgb
+                offset += 3;
+
                 const flags = view.getUint8(offset++);
 
                 if(flags & 2) offset += 4;
@@ -461,48 +482,49 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                 }
 
                 if(name === "a" && size > 0){
-                    myCells.push({id, x, y, size});
+                    myCells.push({ id, x, y, size });
                 }
             }
 
-            if(!myCells.length){
+            // ===== TEMİZ DURUM =====
+            if(myCells.length === 0){
                 menuNew.innerHTML = "Not alive";
                 menuOld.innerHTML = "";
                 _0x594e41.length = 0;
                 return;
             }
 
-            // en son gelen = NEW
+            // ===== EN SON = NEW =====
             const newCell = myCells[myCells.length - 1];
             const oldCells = myCells.slice(0, -1);
 
-            // ===== ARRAY SADECE NEW =====
+            // sadece NEW array'de
             _0x594e41.length = 0;
             _0x594e41.push(newCell);
 
-            // ===== RENDER MENU =====
-            menuNew.innerHTML = `
-                ID:${newCell.id}<br>
-                X:${newCell.x}<br>
-                Y:${newCell.y}<br>
-                SIZE:${newCell.size}
-            `;
+            // ===== RENDER =====
+            menuNew.innerHTML =
+                "ID: " + newCell.id + "<br>" +
+                "X: " + newCell.x + "<br>" +
+                "Y: " + newCell.y + "<br>" +
+                "SIZE: " + newCell.size;
 
             let oldHtml = "";
-            oldCells.forEach(c=>{
-                oldHtml += `
-                    ID:${c.id}<br>
-                    X:${c.x}<br>
-                    Y:${c.y}<br>
-                    SIZE:${c.size}<br><hr>
-                `;
-            });
+            for(let i=0;i<oldCells.length;i++){
+                const c = oldCells[i];
+                oldHtml +=
+                    "ID: " + c.id + "<br>" +
+                    "X: " + c.x + "<br>" +
+                    "Y: " + c.y + "<br>" +
+                    "SIZE: " + c.size +
+                    "<br><hr style='border:0;border-top:1px solid #222'>";
+            }
 
             menuOld.innerHTML = oldHtml;
 
         });
 
-        console.log("NEW/OLD MENU SYSTEM ACTIVE");
+        console.log("LIVE NEW/OLD SYSTEM READY");
     }
 
 })();
