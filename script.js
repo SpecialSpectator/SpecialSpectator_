@@ -376,47 +376,67 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
 (function () {
 
-    function rebuildFromCameraExact() {
+    let lastColor = null;
 
-        if (!_0x2e2fc6) return;
+    function updateOwnColor() {
+        if (_0x594e41 && _0x594e41.length) {
+            lastColor = _0x594e41[0].color;
+        }
+    }
+
+    function rebuildSmart() {
+
+        if (!_0x2e2fc6 || !lastColor) return;
 
         const camX = _0x3054ec;
         const camY = _0x2b1d75;
 
-        let closestCell = null;
-        let closestDist = Infinity;
+        const coreRadius = 120;      // tam merkez
+        const nearRadius = 250;      // hafif yakın
+
+        const coreSq = coreRadius * coreRadius;
+        const nearSq = nearRadius * nearRadius;
+
+        let coreMatches = [];
+        let nearMatches = [];
 
         for (let id in _0x2e2fc6) {
 
             const cell = _0x2e2fc6[id];
 
+            if (cell.color !== lastColor) continue;
+
             const dx = cell.x - camX;
             const dy = cell.y - camY;
+            const distSq = dx * dx + dy * dy;
 
-            const dist = dx * dx + dy * dy;
-
-            if (dist < closestDist) {
-                closestDist = dist;
-                closestCell = cell;
+            if (distSq < coreSq) {
+                coreMatches.push(cell);
+            } else if (distSq < nearSq) {
+                nearMatches.push(cell);
             }
         }
 
-        if (closestCell) {
-            _0x1e530a = [closestCell.id];
-            _0x594e41 = [closestCell];
+        let finalCells = coreMatches.length ? coreMatches : nearMatches;
+
+        if (finalCells.length) {
+            _0x1e530a = finalCells.map(c => c.id);
+            _0x594e41 = finalCells;
         }
     }
 
-    function liveEngineFix() {
+    function ultraLiveEngineFix() {
 
-        if (!_0x594e41 || !_0x594e41.length) {
-            rebuildFromCameraExact();
+        if (_0x594e41 && _0x594e41.length) {
+            updateOwnColor();
+        } else {
+            rebuildSmart();
         }
 
-        requestAnimationFrame(liveEngineFix);
+        requestAnimationFrame(ultraLiveEngineFix);
     }
 
-    requestAnimationFrame(liveEngineFix);
+    requestAnimationFrame(ultraLiveEngineFix);
 
 })();
         function _0x147c50(_0x2f975d) {
