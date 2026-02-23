@@ -374,94 +374,102 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-function smartFindMyCells() {
+(function(){
 
-    if (!_0x2e2fc6) return;
-
-    // Respawn reset
-    if (!_0x594e41 || _0x594e41.length === 0) {
-        window.__smartState = null;
-    }
-
-    if (!window.__smartState) {
-        window.__smartState = {
-            camX: _0x3054ec,
-            camY: _0x2b1d75,
+    if (!window.__focusState) {
+        window.__focusState = {
             color: null,
-            prev: {}
+            lastX: 0,
+            lastY: 0,
+            emptyFrames: 0
         };
     }
 
-    var s = window.__smartState;
+    const s = window.__focusState;
 
-    var camX = _0x3054ec;
-    var camY = _0x2b1d75;
+    const playerCells = _0x594e41;     // player cells
+    const allCells    = _0x43fc0c;     // map cells
+    const camX        = _0x3054ec;
+    const camY        = _0x2b1d75;
 
-    var camDX = camX - s.camX;
-    var camDY = camY - s.camY;
+    // =========================
+    // PLAYER VARSA NORMAL MOD
+    // =========================
+    if (playerCells && playerCells.length > 0) {
 
-    // Spawn color lock
-    if (!s.color) {
-        for (var k in _0x2e2fc6) {
-            var c = _0x2e2fc6[k];
-            if (!c) continue;
+        s.emptyFrames = 0;
 
-            if (Math.abs(c.x - camX) < 350 &&
-                Math.abs(c.y - camY) < 350) {
-                s.color = c.color;
-                break;
-            }
-        }
-        if (!s.color) return;
-    }
-
-    var total = 0;
-    if (_0x594e41 && _0x594e41.length) {
-        for (var i = 0; i < _0x594e41.length; i++) {
-            total += _0x594e41[i].size || 0;
-        }
-    }
-    if (total === 0) total = 200;
-
-    var radius = total * 3.2;
-
-    var mine = [];
-    var prevStore = s.prev;
-
-    for (var k in _0x2e2fc6) {
-
-        var cell = _0x2e2fc6[k];
-        if (!cell) continue;
-
-        if (cell.color !== s.color) continue;
-
-        if (Math.abs(cell.x - camX) > radius) continue;
-        if (Math.abs(cell.y - camY) > radius) continue;
-
-        var prev = prevStore[k];
-
-        if (prev) {
-            var dx = cell.x - prev.x;
-            var dy = cell.y - prev.y;
-
-            if (Math.abs(dx - camDX) < 14 &&
-                Math.abs(dy - camDY) < 14) {
-                mine.push(cell);
-            }
-        } else {
-            mine.push(cell);
+        // Ortalama merkez (split stabil)
+        let sx = 0, sy = 0;
+        for (let i = 0; i < playerCells.length; i++) {
+            sx += playerCells[i].x;
+            sy += playerCells[i].y;
         }
 
-        prevStore[k] = { x: cell.x, y: cell.y };
+        s.lastX = sx / playerCells.length;
+        s.lastY = sy / playerCells.length;
+
+        // Renk kilidi
+        if (!s.color) {
+            s.color = playerCells[0].color;
+        }
+
+        return; // Kamera override yok
     }
 
-    if (mine.length) {
-        _0x594e41 = mine;
+    // =========================
+    // PLAYER YOK (GEÇİCİ BUG)
+    // =========================
+    s.emptyFrames++;
+
+    // 30 frame'den kısa boşlukta reset yok (bug koruma)
+    if (s.emptyFrames > 30) {
+        s.color = null;
+        return;
     }
 
-    s.camX = camX;
-    s.camY = camY;
-}
+    if (!s.color) return;
+
+    const searchRadius = 350;
+    const movementTolerance = 12;
+
+    let best = null;
+    let bestDist = Infinity;
+
+    for (let i = 0; i < allCells.length; i++) {
+
+        const c = allCells[i];
+
+        // ❗ ASLA başka renk alma
+        if (c.color !== s.color) continue;
+
+        const dx = c.x - s.lastX;
+        const dy = c.y - s.lastY;
+
+        const dist = dx*dx + dy*dy;
+
+        if (dist > searchRadius * searchRadius) continue;
+
+        // Hareket senkronu (titreşim engeller)
+        const mdx = c.x - camX;
+        const mdy = c.y - camY;
+
+        if (Math.abs(mdx) > movementTolerance ||
+            Math.abs(mdy) > movementTolerance) continue;
+
+        if (dist < bestDist) {
+            best = c;
+            bestDist = dist;
+        }
+    }
+
+    if (best) {
+        s.lastX = best.x;
+        s.lastY = best.y;
+    }
+
+})();
+
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
                 _0x2c4e3a = _0x5e3f8e;
