@@ -374,71 +374,94 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-(function () {
+function smartFindMyCells() {
 
-    let lastColor = null;
+    if (!_0x2e2fc6) return;
 
-    function updateOwnColor() {
-        if (_0x594e41 && _0x594e41.length) {
-            lastColor = _0x594e41[0].color;
-        }
+    // Respawn reset
+    if (!_0x594e41 || _0x594e41.length === 0) {
+        window.__smartState = null;
     }
 
-    function rebuildSmart() {
+    if (!window.__smartState) {
+        window.__smartState = {
+            camX: _0x3054ec,
+            camY: _0x2b1d75,
+            color: null,
+            prev: {}
+        };
+    }
 
-        if (!_0x2e2fc6 || !lastColor) return;
+    var s = window.__smartState;
 
-        const camX = _0x3054ec;
-        const camY = _0x2b1d75;
+    var camX = _0x3054ec;
+    var camY = _0x2b1d75;
 
-        const coreRadius = 120;      // tam merkez
-        const nearRadius = 250;      // hafif yakın
+    var camDX = camX - s.camX;
+    var camDY = camY - s.camY;
 
-        const coreSq = coreRadius * coreRadius;
-        const nearSq = nearRadius * nearRadius;
+    // Spawn color lock
+    if (!s.color) {
+        for (var k in _0x2e2fc6) {
+            var c = _0x2e2fc6[k];
+            if (!c) continue;
 
-        let coreMatches = [];
-        let nearMatches = [];
-
-        for (let id in _0x2e2fc6) {
-
-            const cell = _0x2e2fc6[id];
-
-            if (cell.color !== lastColor) continue;
-
-            const dx = cell.x - camX;
-            const dy = cell.y - camY;
-            const distSq = dx * dx + dy * dy;
-
-            if (distSq < coreSq) {
-                coreMatches.push(cell);
-            } else if (distSq < nearSq) {
-                nearMatches.push(cell);
+            if (Math.abs(c.x - camX) < 350 &&
+                Math.abs(c.y - camY) < 350) {
+                s.color = c.color;
+                break;
             }
         }
-
-        let finalCells = coreMatches.length ? coreMatches : nearMatches;
-
-        if (finalCells.length) {
-            _0x1e530a = finalCells.map(c => c.id);
-            _0x594e41 = finalCells;
-        }
+        if (!s.color) return;
     }
 
-    function ultraLiveEngineFix() {
+    var total = 0;
+    if (_0x594e41 && _0x594e41.length) {
+        for (var i = 0; i < _0x594e41.length; i++) {
+            total += _0x594e41[i].size || 0;
+        }
+    }
+    if (total === 0) total = 200;
 
-        if (_0x594e41 && _0x594e41.length) {
-            updateOwnColor();
+    var radius = total * 3.2;
+
+    var mine = [];
+    var prevStore = s.prev;
+
+    for (var k in _0x2e2fc6) {
+
+        var cell = _0x2e2fc6[k];
+        if (!cell) continue;
+
+        if (cell.color !== s.color) continue;
+
+        if (Math.abs(cell.x - camX) > radius) continue;
+        if (Math.abs(cell.y - camY) > radius) continue;
+
+        var prev = prevStore[k];
+
+        if (prev) {
+            var dx = cell.x - prev.x;
+            var dy = cell.y - prev.y;
+
+            if (Math.abs(dx - camDX) < 14 &&
+                Math.abs(dy - camDY) < 14) {
+                mine.push(cell);
+            }
         } else {
-            rebuildSmart();
+            mine.push(cell);
         }
 
-        requestAnimationFrame(ultraLiveEngineFix);
+        prevStore[k] = { x: cell.x, y: cell.y };
     }
 
-    requestAnimationFrame(ultraLiveEngineFix);
+    if (mine.length) {
+        _0x594e41 = mine;
+    }
 
-})();
+    s.camX = camX;
+    s.camY = camY;
+}
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
                 _0x2c4e3a = _0x5e3f8e;
@@ -745,6 +768,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         }
 
         function _0x420c83() {
+            smartFindMyCells();
             var _0x1c880b = _0x5bfaae,
                 _0x477c84, _0x4c3dda = _0x5e3f8e,
                 _0x4fb74b = Date[_0x4c3dda(0x1f0)]();
