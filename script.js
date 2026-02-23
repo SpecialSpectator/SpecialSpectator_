@@ -374,61 +374,36 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-(function () {
+document.addEventListener("keydown", function (e) {
 
-    let backupPlayerIds = [];
+    if (e.key.toLowerCase() === "l") {
 
-    function updatePlayerBackup() {
-        if (_0x1e530a &&
-            _0x594e41 &&
-            _0x1e530a.length > 0 &&
-            _0x594e41.length > 0) {
+        console.log("====== PLAYER IDS (_0x1e530a) ======");
+        console.log("Length:", _0x1e530a ? _0x1e530a.length : "undefined");
+        console.log(_0x1e530a);
 
-            backupPlayerIds = _0x1e530a.slice();
-        }
-    }
+        console.log("====== PLAYER CELLS (_0x594e41) ======");
+        console.log("Length:", _0x594e41 ? _0x594e41.length : "undefined");
+        console.log(_0x594e41);
 
-    function restoreFromBackup() {
-        if (!backupPlayerIds.length) return;
-
-        let restoredIds = [];
-        let restoredCells = [];
-
-        for (let i = 0; i < backupPlayerIds.length; i++) {
-            const id = backupPlayerIds[i];
-            const cell = _0x2e2fc6[id];
-
-            if (cell) {
-                restoredIds.push(id);
-                restoredCells.push(cell);
-            }
-        }
-
-        if (restoredIds.length) {
-            _0x1e530a = restoredIds;
-            _0x594e41 = restoredCells;
-        }
-    }
-
-    function gameLoop() {
-
-        if (!_0x1e530a ||
-            !_0x594e41 ||
-            !_0x1e530a.length ||
-            !_0x594e41.length) {
-
-            restoreFromBackup();
+        console.log("====== CELL MAPPING (_0x2e2fc6) ======");
+        if (_0x2e2fc6) {
+            const keys = Object.keys(_0x2e2fc6);
+            console.log("Total Cells:", keys.length);
+            console.log("First 5 cells preview:");
+            console.log(keys.slice(0, 5).map(k => _0x2e2fc6[k]));
         } else {
-            updatePlayerBackup();
+            console.log("undefined");
         }
 
-        requestAnimationFrame(gameLoop);
+        console.log("====== CAMERA CENTER ======");
+        console.log("Center X:", _0x3054ec);
+        console.log("Center Y:", _0x2b1d75);
+
+        console.log("=====================================");
     }
 
-    requestAnimationFrame(gameLoop);
-
-})();
-
+});
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
                 _0x2c4e3a = _0x5e3f8e;
