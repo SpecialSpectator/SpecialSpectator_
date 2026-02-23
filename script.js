@@ -374,78 +374,6 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-(function() {
-    let focusCell = null;
-
-    // WebSocket hook
-    const OldWS = WebSocket;
-    WebSocket = function(url, protocols) {
-        const ws = new OldWS(url, protocols);
-
-        ws.addEventListener("message", e => {
-            if (!(e.data instanceof ArrayBuffer)) return;
-
-            const view = new DataView(e.data);
-            let offset = 0;
-
-            if (view.getUint8(offset++) !== 16) return; // OPCODE 16
-
-            const eatCount = view.getUint16(offset, true);
-            offset += 2 + eatCount * 8;
-
-            let lastCell = null;
-
-            while (true) {
-                if (offset + 4 > view.byteLength) break;
-                const id = view.getUint32(offset, true);
-                offset += 4;
-                if (id === 0) break;
-
-                const x = view.getInt16(offset, true); offset += 2;
-                const y = view.getInt16(offset, true); offset += 2;
-                const size = view.getInt16(offset, true); offset += 2;
-
-                offset += 4; // skip rgb + flags
-                const flags = view.getUint8(offset - 1);
-                if (flags & 2) offset += 4;
-                if (flags & 4) offset += 8;
-                if (flags & 8) offset += 16;
-
-                while (view.getUint16(offset, true) !== 0) offset += 2; // skip name
-                offset += 2;
-
-                lastCell = {x, y};
-            }
-
-            focusCell = lastCell; // en son gelen aktif hücreyi kaydet
-        });
-
-        return ws;
-    };
-
-    function updateCamera() {
-        requestAnimationFrame(updateCamera);
-
-        if (!focusCell) return;
-
-        // ===== CAMERAYI ZORLA FOCUS EDİN =====
-        if (typeof window.ctx !== "undefined") {
-            const ctx = window.ctx; // senin canvas context
-            ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
-            ctx.translate(
-                ctx.canvas.width / 2 - focusCell.x,
-                ctx.canvas.height / 2 - focusCell.y
-            );
-        }
-
-        // Eğer senin oyun zaten global cameraX/cameraY kullanıyorsa:
-        window.cameraX = focusCell.x;
-        window.cameraY = focusCell.y;
-    }
-
-    updateCamera();
-})();
-
         function _0x147c50(_0x2f975d) {
             var _0x8619e1 = _0x5bfaae,
                 _0x2c4e3a = _0x5e3f8e;
@@ -598,7 +526,6 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
                         _0x243c75 = _0x41e9c8[_0x1744a5(0xd1)](_0x1a716a, !0x0), _0x1a716a += 0x4, _0x8594d2 = _0x41e9c8[_0x1744a5(0xd1)](_0x1a716a, !0x0), _0x1a716a += 0x4, _0xda67e0 = _0x41e9c8[_0x1744a5(0xd1)](_0x1a716a, !0x0), _0x1a716a += 0x4;
                         break;
                     case 0x14:
-                        _0x594e41 = [], _0x1e530a = [];
                         break;
                     case 0x15:
                         _0x55de4f = _0x41e9c8['getInt16'](_0x1a716a, !0x0), _0x1a716a += 0x2, _0x13ce6a = _0x41e9c8[_0x1744a5(0x160)](_0x1a716a, !0x0), _0x1a716a += 0x2, _0x258057 || (_0x258057 = !0x0, _0x3d63a7 = _0x55de4f, _0xaccb5d = _0x13ce6a);
