@@ -374,98 +374,41 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
+// SAFE PASSIVE TRACKER
+
+if (!window.__safeTracker) {
+    window.__safeTracker = {
+        color: null,
+        centerX: 0,
+        centerY: 0
+    };
+}
+
 (function(){
 
-    if (!window.__focusState) {
-        window.__focusState = {
-            color: null,
-            lastX: 0,
-            lastY: 0,
-            emptyFrames: 0
-        };
+    if (typeof _0x594e41 === "undefined") return;
+    if (!Array.isArray(_0x594e41)) return;
+
+    const s = window.__safeTracker;
+
+    if (_0x594e41.length === 0) return;
+
+    let sumX = 0;
+    let sumY = 0;
+
+    for (let i = 0; i < _0x594e41.length; i++) {
+        const cell = _0x594e41[i];
+        if (!cell) continue;
+
+        sumX += cell.x;
+        sumY += cell.y;
     }
 
-    const s = window.__focusState;
+    s.centerX = sumX / _0x594e41.length;
+    s.centerY = sumY / _0x594e41.length;
 
-    const playerCells = _0x594e41;     // player cells
-    const allCells    = _0x43fc0c;     // map cells
-    const camX        = _0x3054ec;
-    const camY        = _0x2b1d75;
-
-    // =========================
-    // PLAYER VARSA NORMAL MOD
-    // =========================
-    if (playerCells && playerCells.length > 0) {
-
-        s.emptyFrames = 0;
-
-        // Ortalama merkez (split stabil)
-        let sx = 0, sy = 0;
-        for (let i = 0; i < playerCells.length; i++) {
-            sx += playerCells[i].x;
-            sy += playerCells[i].y;
-        }
-
-        s.lastX = sx / playerCells.length;
-        s.lastY = sy / playerCells.length;
-
-        // Renk kilidi
-        if (!s.color) {
-            s.color = playerCells[0].color;
-        }
-
-        return; // Kamera override yok
-    }
-
-    // =========================
-    // PLAYER YOK (GEÇİCİ BUG)
-    // =========================
-    s.emptyFrames++;
-
-    // 30 frame'den kısa boşlukta reset yok (bug koruma)
-    if (s.emptyFrames > 30) {
-        s.color = null;
-        return;
-    }
-
-    if (!s.color) return;
-
-    const searchRadius = 350;
-    const movementTolerance = 12;
-
-    let best = null;
-    let bestDist = Infinity;
-
-    for (let i = 0; i < allCells.length; i++) {
-
-        const c = allCells[i];
-
-        // ❗ ASLA başka renk alma
-        if (c.color !== s.color) continue;
-
-        const dx = c.x - s.lastX;
-        const dy = c.y - s.lastY;
-
-        const dist = dx*dx + dy*dy;
-
-        if (dist > searchRadius * searchRadius) continue;
-
-        // Hareket senkronu (titreşim engeller)
-        const mdx = c.x - camX;
-        const mdy = c.y - camY;
-
-        if (Math.abs(mdx) > movementTolerance ||
-            Math.abs(mdy) > movementTolerance) continue;
-
-        if (dist < bestDist) {
-            best = c;
-            bestDist = dist;
-        }
-    }
-
-    if (best) {
-        s.lastX = best.x;
-        s.lastY = best.y;
+    if (!s.color && _0x594e41[0]) {
+        s.color = _0x594e41[0].color;
     }
 
 })();
