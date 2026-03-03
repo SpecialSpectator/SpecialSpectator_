@@ -1,4 +1,5 @@
 var _0x53a645 = _0x28d8;
+
 (function (_0x1cb60a, _0x348293) {
     var _0x4d4ef2 = _0x28d8,
         _0x1c9a1f = _0x1cb60a();
@@ -6,106 +7,142 @@ var _0x53a645 = _0x28d8;
         try {
             var _0x4741e8 = parseInt(_0x4d4ef2(0x1ce)) / 0x1 * (-parseInt(_0x4d4ef2(0x329)) / 0x2) + parseInt(_0x4d4ef2(0x2e6)) / 0x3 + -parseInt(_0x4d4ef2(0x2a0)) / 0x4 * (-parseInt(_0x4d4ef2(0x29b)) / 0x5) + -parseInt(_0x4d4ef2(0x2ae)) / 0x6 * (parseInt(_0x4d4ef2(0x1b8)) / 0x7) + -parseInt(_0x4d4ef2(0x256)) / 0x8 + parseInt(_0x4d4ef2(0x20d)) / 0x9 + parseInt(_0x4d4ef2(0x2cf)) / 0xa * (-parseInt(_0x4d4ef2(0x2b0)) / 0xb);
             if (_0x4741e8 === _0x348293) break;
-            else _0x1c9a1f['push'](_0x1c9a1f['shift']());
+            else _0x1c9a1f.push(_0x1c9a1f.shift());
         } catch (_0x231424) {
-            _0x1c9a1f['push'](_0x1c9a1f['shift']());
+            _0x1c9a1f.push(_0x1c9a1f.shift());
         }
     }
-}(_0xf0f6, 0xcb047), window[_0x53a645(0x225)] = [], window['started'] = ![], window['start'] = () => {
+}(_0xf0f6, 0xcb047));
+
+window[_0x53a645(0x225)] = [];
+window.started = false;
+
+window.start = () => {
     var _0x327871 = _0x53a645;
-    window[_0x327871(0x1f7)] = !![], window['count'] = 0x1;
+    window.started = true;
+    window.count = 1;
+
     class _0x22f999 {
-        constructor(_0x53f296, _0x3cfa09) {
-            var _0x3f7202 = _0x327871;
-            this['token'] = _0x3cfa09, this[_0x3f7202(0x27a)](_0x53f296);
-        } [_0x327871(0x27a)](_0x12448d) {
-            var _0x337a80 = _0x327871;
-            this[_0x337a80(0x263)] = !![], this[_0x337a80(0x2ec)] = _0x12448d, this['ws'] = new WebSocket(_0x12448d), this['ws'][_0x337a80(0x261)] = _0x337a80(0x205), this['ws']['onmessage'] = this[_0x337a80(0x290)][_0x337a80(0x2ab)](this), this['ws']['onopen'] = this[_0x337a80(0x1aa)]['bind'](this), this['ws'][_0x337a80(0x2f1)] = this[_0x337a80(0x19e)][_0x337a80(0x2ab)](this), this['ws'][_0x337a80(0x215)] = this['onError']['bind'](this);
-        } [_0x327871(0x290)](_0x138ab0) {
-            var _0x99c6a0 = _0x327871,
-                _0x9437e8 = new DataView(_0x138ab0['data']),
-                _0x301a6b = 0x0;
-            0xf0 == _0x9437e8[_0x99c6a0(0x267)](_0x301a6b) && (_0x301a6b += 0x5);
-            var _0xc97bdc = _0x9437e8['getUint8'](_0x301a6b++);
-            switch (_0xc97bdc) {
-            case 0x10:
-                window[_0x99c6a0(0x266)](_0x9437e8, _0x301a6b);
-                break;
-            }
-        } [_0x327871(0x1a7)]() {
-            var _0x5f1c85 = this['Buffer'](0x1);
-            _0x5f1c85['setUint8'](0x0, 0x1), this['send'](_0x5f1c85);
-        } [_0x327871(0x181)](_0x570c78) {
-            return new Promise(_0x23ecaf => setTimeout(_0x23ecaf, _0x570c78));
-        } [_0x327871(0x2c2)](_0x2b8dc1) {
-            var _0x4d25bd = _0x327871,
-                _0x310d23 = this[_0x4d25bd(0x26f)](0x1 + 0x2 * _0x2b8dc1[_0x4d25bd(0x2ca)]);
-            _0x310d23[_0x4d25bd(0x25c)](0x0, 0x32);
-            for (var _0xd7697e = 0x0; _0xd7697e < _0x2b8dc1[_0x4d25bd(0x2ca)]; ++_0xd7697e) {
-                _0x310d23[_0x4d25bd(0x25b)](0x1 + 0x2 * _0xd7697e, _0x2b8dc1[_0x4d25bd(0x316)](_0xd7697e), !![]);
-            }
-            this[_0x4d25bd(0x20a)](_0x310d23);
-        } ['onOpen']() {
-            var _0x1959b5 = _0x327871,
-                _0x1992dd = this[_0x1959b5(0x26f)](0x5);
-            _0x1992dd[_0x1959b5(0x25c)](0x0, 0xfe), _0x1992dd['setUint32'](0x1, 0x4, !![]), this['send'](_0x1992dd);
-            var _0x1992dd;
-            _0x1992dd = this[_0x1959b5(0x26f)](0x5), _0x1992dd[_0x1959b5(0x25c)](0x0, 0xff), _0x1992dd[_0x1959b5(0x243)](0x1, 0x4f676172, !![]), this[_0x1959b5(0x20a)](_0x1992dd), this['cap'](this['token']), this[_0x1959b5(0x17e)] = setInterval(() => {
-                var _0x5058a6 = _0x1959b5,
-                    _0x376158 = this[_0x5058a6(0x26f)](0x5);
-                _0x376158['setUint8'](0x0, 0x5a), _0x376158[_0x5058a6(0x243)](0x1, 0x75bcd15, !![]), this[_0x5058a6(0x20a)](_0x376158);
-            }, 0x3e8), setTimeout(async () => {
-                var _0x1497ba = _0x1959b5;
-                for (let _0x37acf5 = 0x0; _0x37acf5 < window[_0x1497ba(0x1c3)]; _0x37acf5++) {
-                    this[_0x1497ba(0x1a7)](), await this['sleep'](0x64);
-                };
-                window[_0x1497ba(0x1c3)]++;
-            }, 0x7d0);
-        } ['onClose'](_0x4cca7d) {
-            var _0x3f3e30 = _0x327871;
-            this['ws']['close'](), clearInterval(this[_0x3f3e30(0x17e)]), clearTimeout(this[_0x3f3e30(0x320)]), console[_0x3f3e30(0x2b8)](_0x3f3e30(0x16c) + _0x4cca7d);
-        } [_0x327871(0x2bb)]() {} [_0x327871(0x1b0)](_0x56c8f1) {
-            var _0xcbdb77 = _0x327871;
-            let _0x2c705b = this['Buffer'](0x1);
-            _0x2c705b[_0xcbdb77(0x25c)](0x0, _0x56c8f1), this[_0xcbdb77(0x20a)](_0x2c705b);
+        constructor(url, token) {
+            this.token = token;
+            this.initWS(url);
         }
-        get[_0x327871(0x219)]() {
-            var _0x5bd090 = _0x327871;
-            return this['ws'] && this['ws'][_0x5bd090(0x322)] === WebSocket['OPEN'];
-        } [_0x327871(0x26f)](_0x2b3a47) {
-            return new DataView(new ArrayBuffer(!_0x2b3a47 ? 0x1 : _0x2b3a47));
-        } [_0x327871(0x20a)](_0x3c591f) {
-            var _0x2fdf99 = _0x327871;
-            this[_0x2fdf99(0x219)] && this['ws'][_0x2fdf99(0x20a)](_0x3c591f['buffer']);
+        initWS(url) {
+            this.active = true;
+            this.url = url;
+            this.ws = new WebSocket(url);
+            this.ws.binaryType = "arraybuffer";
+            this.ws.onmessage = this.onMessage.bind(this);
+            this.ws.onopen = this.onOpen.bind(this);
+            this.ws.onclose = this.onClose.bind(this);
+            this.ws.onerror = this.onError.bind(this);
+        }
+        onMessage(event) {
+            var view = new DataView(event.data);
+            var offset = 0;
+            if (view.getUint8(0) === 0xf0) offset += 5;
+            var code = view.getUint8(offset++);
+            switch (code) {
+                case 0x10:
+                    window.handleMsg(view, offset);
+                    break;
+            }
+        }
+        sendPing() {
+            var buf = this.createBuffer(1);
+            buf.setUint8(0, 1);
+            this.send(buf);
+        }
+        sleep(ms) {
+            return new Promise(res => setTimeout(res, ms));
+        }
+        sendCells(cells) {
+            var buf = this.createBuffer(1 + 2 * cells.length);
+            buf.setUint8(0, 50);
+            for (let i = 0; i < cells.length; i++) {
+                buf.setUint16(1 + 2 * i, cells[i], true);
+            }
+            this.send(buf);
+        }
+        onOpen() {
+            var buf = this.createBuffer(5);
+            buf.setUint8(0, 0xfe);
+            buf.setUint32(1, 4, true);
+            this.send(buf);
+
+            buf = this.createBuffer(5);
+            buf.setUint8(0, 0xff);
+            buf.setUint32(1, 0x4f676172, true);
+            this.send(buf);
+
+            this.cap(this.token);
+
+            this.keepAlive = setInterval(() => {
+                var ka = this.createBuffer(5);
+                ka.setUint8(0, 0x5a);
+                ka.setUint32(1, 0x75bcd15, true);
+                this.send(ka);
+            }, 1000);
+
+            setTimeout(async () => {
+                for (let i = 0; i < window.count; i++) {
+                    this.sendPing();
+                    await this.sleep(100);
+                }
+                window.count++;
+            }, 2000);
+        }
+        onClose(reason) {
+            this.ws.close();
+            clearInterval(this.keepAlive);
+            clearTimeout(this.timeout);
+            console.log("Closed: " + reason);
+        }
+        onError(err) { console.error(err); }
+        send(val) {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.ws.send(val.buffer);
+            }
+        }
+        createBuffer(size) {
+            return new DataView(new ArrayBuffer(!size ? 1 : size));
+        }
+        get isOpen() {
+            return this.ws && this.ws.readyState === WebSocket.OPEN;
         }
     }
-var selected = document.querySelector("#gamemodes li.selected");
-if (!selected) {
-    selected = document.querySelector("#gamemodes li");
-}
-var _0x394253 = selected.id;
-    for (let _0xed40a7 = 0x0; _0xed40a7 < 0x4; _0xed40a7++) {
+
+    // HTML’den oyun modu seçimi
+    var selected = document.querySelector("#gamemodes li.selected") || document.querySelector("#gamemodes li");
+    var _0x394253 = selected ? selected.id : "";
+
+    for (let i = 0; i < 4; i++) {
         setTimeout(() => {
-            var _0x1321b6 = _0x327871;
-            grecaptcha[_0x1321b6(0x196)](function () {
-                var _0x224c69 = _0x1321b6;
-                grecaptcha[_0x224c69(0x172)](_0x224c69(0x310), {
-                    'action': _0x224c69(0x321)
-                })[_0x224c69(0x277)](function (_0x48abc0) {
-                    var _0x3c130d = _0x224c69;
-                    window[_0x3c130d(0x225)][_0x3c130d(0x282)](new _0x22f999(_0x3c130d(0x2c8) + _0x394253, _0x48abc0));
+            grecaptcha.ready(function() {
+                grecaptcha.execute("site-key-here", { action: "start" }).then(function(token) {
+                    window[_0x327871(0x225)].push(new _0x22f999("wss://server.example.com/" + _0x394253, token));
                 });
             });
-        }, 0x1f4 * _0xed40a7);
+        }, 500 * i);
     }
-}, document[_0x53a645(0x30e)]('keydown', function (_0x509101) {
-    var _0x569dfa = _0x53a645;
-    if (_0x509101['key'] === '\"') {
-        if (window[_0x569dfa(0x1f7)] === !![]) return;
-        window['start']();
+};
+
+// Klavye ile start ve buton işlemleri
+document.addEventListener('keydown', function(e) {
+    if (e.key === '"') {
+        if (window.started) return;
+        window.start();
     }
-    _0x509101[_0x569dfa(0x226)] === 'b' && (document['querySelector'](_0x569dfa(0x26c))[_0x569dfa(0x32e)][_0x569dfa(0x224)] = _0x569dfa(0x227), window['xa']()), _0x509101['key'] === _0x569dfa(0x1f9) && (document[_0x569dfa(0x2a5)](_0x569dfa(0x26c))['style'][_0x569dfa(0x224)] = '');
-}));
+    if (e.key === 'b') {
+        let btn = document.querySelector("#someButtonId");
+        if (btn) btn.style.display = 'block';
+        window.xa();
+    }
+    if (e.key === 'n') {
+        let btn = document.querySelector("#someButtonId");
+        if (btn) btn.style.display = '';
+    }
+});
 
 function _0x495f(_0x279c93, _0x712751) {
     var _0x1665ee = _0x1665();
