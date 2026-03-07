@@ -440,50 +440,33 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
 
 
-function restoreFromOwnIds() {
+    function updatePlayerCells() {
 
-    if (!ownPlayerIds.length) return;
-
-    let restoredIds = [];
-    let restoredCells = [];
-
-    for (let i = 0; i < ownPlayerIds.length; i++) {
-
-        const id = ownPlayerIds[i];
-        const cell = _0x2e2fc6[id];
-
-        if (cell) {
-            restoredIds.push(id);
-            restoredCells.push(cell);
-        }
-
-    }
-
-    if (restoredIds.length) {
+        if (!ownPlayerIds.length) return;
 
         _0x1e530a.length = 0;
         _0x594e41.length = 0;
 
-        for (let i = 0; i < restoredIds.length; i++) {
-            _0x1e530a.push(restoredIds[i]);
-            _0x594e41.push(restoredCells[i]);
+        for (let i = 0; i < ownPlayerIds.length; i++) {
+
+            const id = ownPlayerIds[i];
+            const cell = _0x2e2fc6[id];
+
+            if (cell) {
+
+                _0x1e530a.push(id);
+                _0x594e41.push(cell);
+
+            }
+
         }
 
     }
 
-}
-
 
     function gameLoop() {
 
-        if (!_0x1e530a ||
-            !_0x594e41 ||
-            !_0x1e530a.length ||
-            !_0x594e41.length) {
-
-            restoreFromOwnIds();
-
-        }
+        updatePlayerCells();
 
         requestAnimationFrame(gameLoop);
 
