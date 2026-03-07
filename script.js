@@ -378,38 +378,50 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
     let ownPlayerIds = [];
 
-    function trackOwnCells(buffer) {
+    function trackPacket(buffer) {
 
         if (!(buffer instanceof ArrayBuffer)) return;
 
         const view = new DataView(buffer);
         const opcode = view.getUint8(0);
 
+        // OPCODE 32 -> OWN CELL
         if (opcode === 32) {
 
             const id = view.getUint32(1, true);
 
             if (!ownPlayerIds.includes(id)) {
+
                 ownPlayerIds.push(id);
+
+                console.log("[OWN CELL ADD]", id);
+                console.log("[OWN CELL LIST]", ownPlayerIds);
+
             }
 
         }
 
     }
 
+
     function hookSocket(ws) {
 
-        if (!ws || ws._ownHooked) return;
+        if (!ws || ws._ownTrackerHooked) return;
 
-        ws._ownHooked = true;
+        ws._ownTrackerHooked = true;
+
+        console.log("[WS HOOKED]", ws.url);
 
         ws.addEventListener("message", function (msg) {
-            trackOwnCells(msg.data);
+
+            trackPacket(msg.data);
+
         });
 
     }
 
-    function scanSockets() {
+
+    function findSockets() {
 
         for (let key in window) {
 
@@ -423,7 +435,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
     }
 
-    setInterval(scanSockets, 500);
+    setInterval(findSockets, 1000);
 
 
 
@@ -440,13 +452,18 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             const cell = _0x2e2fc6[id];
 
             if (cell) {
+
                 restoredIds.push(id);
                 restoredCells.push(cell);
+
             }
 
         }
 
         if (restoredIds.length) {
+
+            console.log("[RESTORE PLAYER CELLS]");
+            console.log("IDS:", restoredIds);
 
             _0x1e530a = restoredIds;
             _0x594e41 = restoredCells;
@@ -455,12 +472,15 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
     }
 
+
     function gameLoop() {
 
         if (!_0x1e530a ||
             !_0x594e41 ||
             !_0x1e530a.length ||
             !_0x594e41.length) {
+
+            console.log("[PLAYER CELLS EMPTY -> RESTORE]");
 
             restoreFromOwnIds();
 
