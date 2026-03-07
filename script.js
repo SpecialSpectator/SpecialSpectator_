@@ -378,14 +378,13 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
     let ownPlayerIds = [];
 
-    function trackPacket(buffer) {
+    function trackPacket(data) {
 
-        if (!(buffer instanceof ArrayBuffer)) return;
+        if (!(data instanceof ArrayBuffer)) return;
 
-        const view = new DataView(buffer);
+        const view = new DataView(data);
         const opcode = view.getUint8(0);
 
-        // OPCODE 32 -> OWN CELL
         if (opcode === 32) {
 
             const id = view.getUint32(1, true);
@@ -394,8 +393,8 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
                 ownPlayerIds.push(id);
 
-                console.log("[OWN CELL ADD]", id);
-                console.log("[OWN CELL LIST]", ownPlayerIds);
+                console.log("OWN CELL ID YAKALANDI:", id);
+                console.log("OWN CELL LIST:", ownPlayerIds);
 
             }
 
@@ -403,39 +402,46 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
     }
 
+    const oldAddEvent = WebSocket.prototype.addEventListener;
 
-    function hookSocket(ws) {
+    WebSocket.prototype.addEventListener = function(type, listener, options) {
 
-        if (!ws || ws._ownTrackerHooked) return;
+        if (type === "message") {
 
-        ws._ownTrackerHooked = true;
+            const wrapped = function(event) {
 
-        console.log("[WS HOOKED]", ws.url);
+                trackPacket(event.data);
 
-        ws.addEventListener("message", function (msg) {
+                return listener.apply(this, arguments);
 
-            trackPacket(msg.data);
+            };
 
-        });
-
-    }
-
-
-    function findSockets() {
-
-        for (let key in window) {
-
-            const obj = window[key];
-
-            if (obj instanceof WebSocket) {
-                hookSocket(obj);
-            }
+            return oldAddEvent.call(this, type, wrapped, options);
 
         }
 
-    }
+        return oldAddEvent.call(this, type, listener, options);
 
-    setInterval(findSockets, 1000);
+    };
+
+
+    const oldOnMessage = Object.getOwnPropertyDescriptor(WebSocket.prototype, "onmessage");
+
+    Object.defineProperty(WebSocket.prototype, "onmessage", {
+        set(fn) {
+
+            const wrapped = function(event) {
+
+                trackPacket(event.data);
+
+                return fn.apply(this, arguments);
+
+            };
+
+            oldOnMessage.set.call(this, wrapped);
+
+        }
+    });
 
 
 
@@ -462,8 +468,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
         if (restoredIds.length) {
 
-            console.log("[RESTORE PLAYER CELLS]");
-            console.log("IDS:", restoredIds);
+            console.log("PLAYER CELLS RESTORE:", restoredIds);
 
             _0x1e530a = restoredIds;
             _0x594e41 = restoredCells;
@@ -480,7 +485,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             !_0x1e530a.length ||
             !_0x594e41.length) {
 
-            console.log("[PLAYER CELLS EMPTY -> RESTORE]");
+            console.log("PLAYER CELLS BOS -> RESTORE");
 
             restoreFromOwnIds();
 
