@@ -376,39 +376,72 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
 (function () {
 
-    let backupPlayerIds = [];
+    let ownPlayerIds = [];
 
-    function updatePlayerBackup() {
-        if (_0x1e530a &&
-            _0x594e41 &&
-            _0x1e530a.length > 0 &&
-            _0x594e41.length > 0) {
+    function trackOwnCells(buffer) {
 
-            backupPlayerIds = _0x1e530a.slice();
+        if (!buffer || !(buffer instanceof ArrayBuffer)) return;
+
+        const view = new DataView(buffer);
+        const opcode = view.getUint8(0);
+
+        if (opcode === 32) {
+
+            const id = view.getUint32(1, true);
+
+            if (!ownPlayerIds.includes(id)) {
+                ownPlayerIds.push(id);
+            }
+
         }
+
     }
 
-    function restoreFromBackup() {
-        if (!backupPlayerIds.length) return;
+    const _OldWebSocket = WebSocket;
+
+    WebSocket = function (url, protocols) {
+
+        const ws = protocols ? new _OldWebSocket(url, protocols) : new _OldWebSocket(url);
+
+        ws.addEventListener("message", function (msg) {
+            trackOwnCells(msg.data);
+        });
+
+        return ws;
+
+    };
+
+    WebSocket.prototype = _OldWebSocket.prototype;
+
+
+    function restoreFromOwnIds() {
+
+        if (!ownPlayerIds.length) return;
 
         let restoredIds = [];
         let restoredCells = [];
 
-        for (let i = 0; i < backupPlayerIds.length; i++) {
-            const id = backupPlayerIds[i];
+        for (let i = 0; i < ownPlayerIds.length; i++) {
+
+            const id = ownPlayerIds[i];
             const cell = _0x2e2fc6[id];
 
             if (cell) {
                 restoredIds.push(id);
                 restoredCells.push(cell);
             }
+
         }
 
         if (restoredIds.length) {
+
             _0x1e530a = restoredIds;
             _0x594e41 = restoredCells;
+
         }
+
     }
+
 
     function gameLoop() {
 
@@ -417,12 +450,12 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             !_0x1e530a.length ||
             !_0x594e41.length) {
 
-            restoreFromBackup();
-        } else {
-            updatePlayerBackup();
+            restoreFromOwnIds();
+
         }
 
         requestAnimationFrame(gameLoop);
+
     }
 
     requestAnimationFrame(gameLoop);
