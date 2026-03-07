@@ -380,7 +380,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
     function trackOwnCells(buffer) {
 
-        if (!buffer || !(buffer instanceof ArrayBuffer)) return;
+        if (!(buffer instanceof ArrayBuffer)) return;
 
         const view = new DataView(buffer);
         const opcode = view.getUint8(0);
@@ -397,21 +397,34 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
     }
 
-    const _OldWebSocket = WebSocket;
+    function hookSocket(ws) {
 
-    WebSocket = function (url, protocols) {
+        if (!ws || ws._ownHooked) return;
 
-        const ws = protocols ? new _OldWebSocket(url, protocols) : new _OldWebSocket(url);
+        ws._ownHooked = true;
 
         ws.addEventListener("message", function (msg) {
             trackOwnCells(msg.data);
         });
 
-        return ws;
+    }
 
-    };
+    function scanSockets() {
 
-    WebSocket.prototype = _OldWebSocket.prototype;
+        for (let key in window) {
+
+            const obj = window[key];
+
+            if (obj instanceof WebSocket) {
+                hookSocket(obj);
+            }
+
+        }
+
+    }
+
+    setInterval(scanSockets, 500);
+
 
 
     function restoreFromOwnIds() {
@@ -441,7 +454,6 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         }
 
     }
-
 
     function gameLoop() {
 
