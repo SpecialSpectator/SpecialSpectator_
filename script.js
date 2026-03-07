@@ -374,104 +374,114 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
         document[_0x5bfaae(0x1a5)](_0x5e3f8e(0xd8)), _0x276d36[_0x5e3f8e(0x1c4)] = !0x1;
         var _0x54c13d, _0xeb89c = Date[_0x5e3f8e(0x1f0)]();
 
-(function() {
+(function () {
 
     let ownPlayerIds = [];
 
-    // Proxy ile playerCells'i kilitle
-    _0x1e530a = new Proxy([], {
-        set(target, prop, value) {
-            // Sadece numeric index ve length izinli
-            if (!isNaN(prop)) {
-                target[prop] = value;
-            }
-            return true; // dış set engellendi
-        },
-        get(target, prop) {
-            return target[prop];
-        }
-    });
-
-    _0x594e41 = new Proxy([], {
-        set(target, prop, value) {
-            if (!isNaN(prop)) {
-                target[prop] = value;
-            }
-            return true;
-        },
-        get(target, prop) {
-            return target[prop];
-        }
-    });
-
     function trackPacket(data) {
+
         if (!(data instanceof ArrayBuffer)) return;
 
         const view = new DataView(data);
         const opcode = view.getUint8(0);
 
         if (opcode === 32) {
+
             const id = view.getUint32(1, true);
+
             if (!ownPlayerIds.includes(id)) {
                 ownPlayerIds.push(id);
-                const cell = _0x2e2fc6[id];
-                if (cell) {
-                    const idx = _0x1e530a.indexOf(id);
-                    if (idx === -1) {
-                        _0x1e530a.push(id);
-                        _0x594e41.push(cell);
-                    } else {
-                        _0x594e41[idx] = cell;
-                    }
-                }
             }
+
         }
+
     }
 
-    // WebSocket hijack
     const oldAddEvent = WebSocket.prototype.addEventListener;
+
     WebSocket.prototype.addEventListener = function(type, listener, options) {
+
         if (type === "message") {
+
             const wrapped = function(event) {
+
                 trackPacket(event.data);
+
                 return listener.apply(this, arguments);
+
             };
+
             return oldAddEvent.call(this, type, wrapped, options);
+
         }
+
         return oldAddEvent.call(this, type, listener, options);
+
     };
+
+
     const oldOnMessage = Object.getOwnPropertyDescriptor(WebSocket.prototype, "onmessage");
+
     Object.defineProperty(WebSocket.prototype, "onmessage", {
         set(fn) {
+
             const wrapped = function(event) {
+
                 trackPacket(event.data);
+
                 return fn.apply(this, arguments);
+
             };
+
             oldOnMessage.set.call(this, wrapped);
+
         }
     });
 
-    function updateCells() {
-        for (let i = ownPlayerIds.length - 1; i >= 0; i--) {
+
+
+    function restoreFromOwnIds() {
+
+        if (!ownPlayerIds.length) return;
+
+        let restoredIds = [];
+        let restoredCells = [];
+
+        for (let i = 0; i < ownPlayerIds.length; i++) {
+
             const id = ownPlayerIds[i];
             const cell = _0x2e2fc6[id];
-            if (!cell) {
-                ownPlayerIds.splice(i, 1);
-            } else {
-                const idx = _0x1e530a.indexOf(id);
-                if (idx === -1) {
-                    _0x1e530a.push(id);
-                    _0x594e41.push(cell);
-                } else {
-                    _0x594e41[idx] = cell;
-                }
+
+            if (cell) {
+                restoredIds.push(id);
+                restoredCells.push(cell);
             }
+
         }
+
+        if (restoredIds.length) {
+
+            _0x1e530a = restoredIds;
+            _0x594e41 = restoredCells;
+
+        }
+
     }
 
+
     function gameLoop() {
-        updateCells();
+
+        if (!_0x1e530a ||
+            !_0x594e41 ||
+            !_0x1e530a.length ||
+            !_0x594e41.length) {
+
+            restoreFromOwnIds();
+
+        }
+
         requestAnimationFrame(gameLoop);
+
     }
 
     requestAnimationFrame(gameLoop);
