@@ -390,12 +390,7 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             const id = view.getUint32(1, true);
 
             if (!ownPlayerIds.includes(id)) {
-
                 ownPlayerIds.push(id);
-
-                console.log("OWN CELL ID YAKALANDI:", id);
-                console.log("OWN CELL LIST:", ownPlayerIds);
-
             }
 
         }
@@ -445,37 +440,38 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
 
 
 
-    function restoreFromOwnIds() {
+function restoreFromOwnIds() {
 
-        if (!ownPlayerIds.length) return;
+    if (!ownPlayerIds.length) return;
 
-        let restoredIds = [];
-        let restoredCells = [];
+    let restoredIds = [];
+    let restoredCells = [];
 
-        for (let i = 0; i < ownPlayerIds.length; i++) {
+    for (let i = 0; i < ownPlayerIds.length; i++) {
 
-            const id = ownPlayerIds[i];
-            const cell = _0x2e2fc6[id];
+        const id = ownPlayerIds[i];
+        const cell = _0x2e2fc6[id];
 
-            if (cell) {
-
-                restoredIds.push(id);
-                restoredCells.push(cell);
-
-            }
-
-        }
-
-        if (restoredIds.length) {
-
-            console.log("PLAYER CELLS RESTORE:", restoredIds);
-
-            _0x1e530a = restoredIds;
-            _0x594e41 = restoredCells;
-
+        if (cell) {
+            restoredIds.push(id);
+            restoredCells.push(cell);
         }
 
     }
+
+    if (restoredIds.length) {
+
+        _0x1e530a.length = 0;
+        _0x594e41.length = 0;
+
+        for (let i = 0; i < restoredIds.length; i++) {
+            _0x1e530a.push(restoredIds[i]);
+            _0x594e41.push(restoredCells[i]);
+        }
+
+    }
+
+}
 
 
     function gameLoop() {
@@ -484,8 +480,6 @@ document['addEventListener'](_0x1f6e83(0xde), _0x407c32 => {
             !_0x594e41 ||
             !_0x1e530a.length ||
             !_0x594e41.length) {
-
-            console.log("PLAYER CELLS BOS -> RESTORE");
 
             restoreFromOwnIds();
 
